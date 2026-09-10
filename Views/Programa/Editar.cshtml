@@ -1,0 +1,62 @@
+﻿@model SistemaBecasWeb.Models.ProgramaViewModel
+
+<div class="container mt-4">
+    <h2>@(string.IsNullOrEmpty(Model.CodPrograma) ? "Crear Programa" : "Editar Programa")</h2>
+
+    <div class="card p-4 shadow-sm w-50">
+        <form method="post" action="/Programa/@(string.IsNullOrEmpty(Model.CodPrograma) ? "Crear" : "Editar")">
+
+            <div class="mb-2">
+                <label>Código del Programa (Ej: PRG-001):</label>
+                <!-- Si estamos editando, el código es de solo lectura porque es Llave Primaria -->
+                <input type="text" name="CodPrograma" value="@Model.CodPrograma" class="form-control" @(string.IsNullOrEmpty(Model.CodPrograma) ? "" : "readonly") required />
+            </div>
+            <div class="mb-2">
+                <label>Nombre:</label>
+                <input type="text" name="Nombre" value="@Model.Nombre" class="form-control" required />
+            </div>
+            <div class="mb-2">
+                <label>Descripción:</label>
+                <textarea name="Descripcion" class="form-control">@Model.Descripcion</textarea>
+            </div>
+            <div class="mb-2">
+                <label>Área:</label>
+                <input type="text" name="Area" value="@Model.Area" class="form-control" required />
+            </div>
+            <div class="mb-2">
+                <label>Tipo (Maestría, Especialidad):</label>
+                <input type="text" name="TipoPrograma" value="@Model.TipoPrograma" class="form-control" required />
+            </div>
+            <div class="mb-2">
+                <label>Modalidad:</label>
+                <input type="text" name="Modalidad" value="@Model.Modalidad" class="form-control" required />
+            </div>
+
+            <!-- El ComboBox de la Universidad Relacionada -->
+            <div class="mb-4">
+                <label>Universidad que lo imparte:</label>
+                <select name="IdUniversidad" class="form-select" required>
+                    <option value="">-- Seleccione una --</option>
+                    @if (ViewBag.Universidades != null)
+                    {
+                        foreach (var uni in ViewBag.Universidades)
+                        {
+                            <!-- Selecciona automáticamente la universidad correcta si estamos en Modo Editar -->
+                            if (Model.IdUniversidad == uni.IdUniversidad)
+                            {
+                                <option value="@uni.IdUniversidad" selected>@uni.Nombre</option>
+                            }
+                            else
+                            {
+                                <option value="@uni.IdUniversidad">@uni.Nombre</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a href="/Programa/Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

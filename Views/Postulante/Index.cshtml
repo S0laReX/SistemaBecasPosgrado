@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SistemaBecasWeb.Models.PostulanteViewModel>
+
+<div class="d-flex justify-content-between mb-3 mt-4">
+    <h2>Postulantes Registrados</h2>
+    <a href="/Postulante/Crear" class="btn btn-success">Registrar Nuevo Postulante</a>
+</div>
+
+<table class="table table-bordered table-striped shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Documento</th>
+            <th>Nombres</th>
+            <th>Apellidos</th>
+            <th>Correo</th>
+            <th>Formación</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var post in Model)
+        {
+            <tr>
+                <td>@post.DocIdentidad</td>
+                <td>@post.Nombres</td>
+                <td>@post.Apellidos</td>
+                <td>@post.Correo</td>
+                <td>@post.NivelFormacion</td>
+                <td>
+                    <!-- Este botón lleva directamente a la vista que hicimos para gestionar sus experiencias -->
+                    <a href="/Postulante/Experiencias?doc=@post.DocIdentidad" class="btn btn-sm btn-info text-white">Gestionar Historial Laboral</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

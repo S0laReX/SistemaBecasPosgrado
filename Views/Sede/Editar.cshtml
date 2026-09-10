@@ -1,0 +1,54 @@
+﻿@model SistemaBecasWeb.Models.SedeViewModel
+
+<div class="container mt-4">
+    <h2>@(string.IsNullOrEmpty(Model.CodSede) ? "Crear Sede" : "Editar Sede")</h2>
+
+    <div class="card p-4 shadow-sm w-50">
+        <form method="post" action="/Sede/@(string.IsNullOrEmpty(Model.CodSede) ? "Crear" : "Editar")">
+
+            <div class="mb-2">
+                <label>Código de Sede:</label>
+                <input type="text" name="CodSede" value="@Model.CodSede" class="form-control" @(string.IsNullOrEmpty(Model.CodSede) ? "" : "readonly") required />
+            </div>
+
+            <div class="row">
+                <div class="col-md-6 mb-2">
+                    <label>Nombre:</label>
+                    <input type="text" name="Nombre" value="@Model.Nombre" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-2">
+                    <label>Tipo (Principal, Anexo):</label>
+                    <input type="text" name="TipoSede" value="@Model.TipoSede" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="mb-2">
+                <label>Responsable:</label>
+                <input type="text" name="Responsable" value="@Model.Responsable" class="form-control" required />
+            </div>
+
+            <div class="row">
+                <div class="col-md-4 mb-2">
+                    <label>País:</label>
+                    <input type="text" name="Pais" value="@Model.Pais" class="form-control" required />
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label>Departamento:</label>
+                    <input type="text" name="Departamento" value="@Model.Departamento" class="form-control" required />
+                </div>
+                <div class="col-md-4 mb-2">
+                    <label>Municipio:</label>
+                    <input type="text" name="Municipio" value="@Model.Municipio" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="mb-4">
+                <label>Dirección:</label>
+                <input type="text" name="Direccion" value="@Model.Direccion" class="form-control" required />
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a href="/Sede/Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

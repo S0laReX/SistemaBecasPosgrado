@@ -1,0 +1,45 @@
+﻿@model SistemaBecasWeb.Models.PostulanteViewModel
+
+<div class="container mt-4">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="card shadow-sm p-4">
+                <h3 class="mb-4">Registro de Postulante - Paso 1</h3>
+
+                <form method="post" action="/Postulante/Crear">
+                    <div class="mb-3">
+                        <label>Documento de Identidad:</label>
+                        <input type="text" name="DocIdentidad" class="form-control" placeholder="Ej: 1234567" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Nombres:</label>
+                        <input type="text" name="Nombres" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Apellidos:</label>
+                        <input type="text" name="Apellidos" class="form-control" required />
+                    </div>
+
+                    <div class="mb-3">
+                        <label>Correo Electrónico:</label>
+                        <input type="email" name="Correo" class="form-control" required />
+                    </div>
+
+                    <div class="mb-4">
+                        <label>Nivel de Formación:</label>
+                        <select name="NivelFormacion" class="form-select" required>
+                            <option value="">-- Seleccione un Nivel --</option>
+                            <option value="Licenciatura">Licenciatura</option>
+                            <option value="Ingeniería">Ingeniería</option>
+                            <option value="Maestría">Maestría</option>
+                        </select>
+                    </div>
+
+                    <button type="submit" class="btn btn-primary w-100">Guardar y Continuar al Historial Laboral</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>

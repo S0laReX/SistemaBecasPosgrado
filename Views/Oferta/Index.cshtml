@@ -1,0 +1,45 @@
+﻿@model IEnumerable<SistemaBecasWeb.Models.OfertaViewModel>
+<div class="d-flex justify-content-between mb-3 mt-4">
+    <h2>Ofertas de Planificación</h2>
+    <a href="/Oferta/Crear" class="btn btn-success">Nueva Oferta</a>
+</div>
+
+<table class="table table-bordered table-striped shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>ID Oferta</th>
+            <th>Programa</th>
+            <th>Fecha Inicio</th>
+            <th>Fecha Fin</th>
+            <th>Financiamiento</th>
+            <th>Estado</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var of in Model)
+        {
+            <tr>
+                <td>@of.IdOferta</td>
+                <td>@of.NombrePrograma (@of.CodPrograma)</td>
+                <!-- Formateamos la fecha para que se vea bonita (dd/MM/yyyy) -->
+                <td>@of.FechaInicio.ToString("dd/MM/yyyy")</td>
+                <td>@of.FechaFin.ToString("dd/MM/yyyy")</td>
+                <td>@of.TipoFinanciamiento</td>
+                <td>
+                    <!-- Pequeño badge visual para el estado -->
+                    <span class="badge @(of.EstadoOferta == "Vigente" ? "bg-success" : "bg-danger")">
+                        @of.EstadoOferta
+                    </span>
+                </td>
+                <td class="d-flex gap-2">
+                    <a href="/Oferta/Editar/@of.IdOferta" class="btn btn-sm btn-primary">Editar</a>
+                    <form method="post" action="/Oferta/Eliminar">
+                        <input type="hidden" name="id" value="@of.IdOferta" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar oferta?');">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
