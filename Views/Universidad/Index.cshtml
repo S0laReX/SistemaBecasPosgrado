@@ -1,0 +1,35 @@
+﻿@model IEnumerable<SistemaBecasWeb.Models.UniversidadViewModel>
+<div class="d-flex justify-content-between mb-3 mt-4">
+    <h2>Universidades Registradas</h2>
+    <a href="/Universidad/Crear" class="btn btn-success">Nueva Universidad</a>
+</div>
+
+<table class="table table-bordered shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>ID</th>
+            <th>Nombre</th>
+            <th>País</th>
+            <th>Ciudad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var uni in Model)
+        {
+            <tr>
+                <td>@uni.IdUniversidad</td>
+                <td>@uni.Nombre</td>
+                <td>@uni.Pais</td>
+                <td>@uni.Ciudad</td>
+                <td class="d-flex gap-2">
+                    <a href="/Universidad/Editar/@uni.IdUniversidad" class="btn btn-sm btn-primary">Editar</a>
+                    <form method="post" action="/Universidad/Eliminar">
+                        <input type="hidden" name="id" value="@uni.IdUniversidad" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Seguro que desea eliminar?');">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

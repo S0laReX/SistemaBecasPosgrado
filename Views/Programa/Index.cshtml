@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SistemaBecasWeb.Models.ProgramaViewModel>
+<div class="d-flex justify-content-between mb-3 mt-4">
+    <h2>Programas de Posgrado</h2>
+    <a href="/Programa/Crear" class="btn btn-success">Nuevo Programa</a>
+</div>
+
+<table class="table table-bordered table-striped shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Área</th>
+            <th>Modalidad</th>
+            <th>Universidad</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var prog in Model)
+        {
+            <tr>
+                <td>@prog.CodPrograma</td>
+                <td>@prog.Nombre</td>
+                <td>@prog.Area</td>
+                <td>@prog.Modalidad</td>
+                <td>@prog.NombreUniversidad</td> <!-- Este dato vino navegando por el REF -->
+                <td class="d-flex gap-2">
+                    <a href="/Programa/Editar/@prog.CodPrograma" class="btn btn-sm btn-primary">Editar</a>
+                    <form method="post" action="/Programa/Eliminar">
+                        <input type="hidden" name="id" value="@prog.CodPrograma" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar programa?');">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

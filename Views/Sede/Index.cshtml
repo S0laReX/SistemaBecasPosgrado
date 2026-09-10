@@ -1,0 +1,37 @@
+﻿@model IEnumerable<SistemaBecasWeb.Models.SedeViewModel>
+<div class="d-flex justify-content-between mb-3 mt-4">
+    <h2>Sedes Registradas</h2>
+    <a href="/Sede/Crear" class="btn btn-success">Nueva Sede</a>
+</div>
+
+<table class="table table-bordered table-striped shadow-sm">
+    <thead class="table-dark">
+        <tr>
+            <th>Código</th>
+            <th>Nombre</th>
+            <th>Tipo</th>
+            <th>Ubicación</th>
+            <th>Responsable</th>
+            <th>Acciones</th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var s in Model)
+        {
+            <tr>
+                <td>@s.CodSede</td>
+                <td>@s.Nombre</td>
+                <td>@s.TipoSede</td>
+                <td>@s.Municipio, @s.Departamento</td>
+                <td>@s.Responsable</td>
+                <td class="d-flex gap-2">
+                    <a href="/Sede/Editar/@s.CodSede" class="btn btn-sm btn-primary">Editar</a>
+                    <form method="post" action="/Sede/Eliminar">
+                        <input type="hidden" name="id" value="@s.CodSede" />
+                        <button type="submit" class="btn btn-sm btn-danger" onclick="return confirm('¿Eliminar sede?');">Borrar</button>
+                    </form>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

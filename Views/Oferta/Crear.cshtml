@@ -1,0 +1,69 @@
+﻿@model SistemaBecasWeb.Models.OfertaViewModel
+
+<div class="container mt-4">
+    <h2>@(Model.IdOferta == 0 ? "Crear Nueva Oferta" : "Editar Oferta")</h2>
+    
+    <div class="card p-4 shadow-sm w-50">
+        <form method="post" action="/Oferta/@(Model.IdOferta == 0 ? "Crear" : "Editar")">
+            
+            <div class="mb-3">
+                <label>ID de la Oferta (Numérico):</label>
+                <input type="number" name="IdOferta" value="@(Model.IdOferta == 0 ? "" : Model.IdOferta)" class="form-control" @(Model.IdOferta == 0 ? "" : "readonly") required />
+            </div>
+
+            <!-- ComboBox de Programas Relacionados -->
+            <div class="mb-3">
+                <label>Programa al que pertenece:</label>
+                <select name="CodPrograma" class="form-select" required>
+                    <option value="">-- Seleccione un Programa --</option>
+                    @if(ViewBag.Programas != null)
+                    {
+                        foreach (var prog in ViewBag.Programas)
+                        {
+                            if (Model.CodPrograma == prog.CodPrograma)
+                            {
+                                <option value="@prog.CodPrograma" selected>@prog.Nombre (@prog.CodPrograma)</option>
+                            }
+                            else
+                            {
+                                <option value="@prog.CodPrograma">@prog.Nombre (@prog.CodPrograma)</option>
+                            }
+                        }
+                    }
+                </select>
+            </div>
+
+            <div class="row">
+                <!-- Usamos inputs type="date". En ASP.NET, para que el input detecte el valor, el string debe tener formato yyyy-MM-dd -->
+                <div class="col-md-6 mb-3">
+                    <label>Fecha de Inicio:</label>
+                    <input type="date" name="FechaInicio" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" class="form-control" required />
+                </div>
+                <div class="col-md-6 mb-3">
+                    <label>Fecha de Finalización:</label>
+                    <input type="date" name="FechaFin" value="@Model.FechaFin.ToString("yyyy-MM-dd")" class="form-control" required />
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label>Tipo de Financiamiento:</label>
+                <input type="text" name="TipoFinanciamiento" value="@Model.TipoFinanciamiento" class="form-control" placeholder="Ej: Beca Completa, Autofinanciado..." required />
+            </div>
+
+            <div class="mb-4">
+                <label>Estado de la Oferta:</label>
+                <div class="mb-4">
+                    <label>Estado de la Oferta:</label>
+                    <select name="EstadoOferta" class="form-select" required>
+                        <!-- Validamos cuál está seleccionado usando la sintaxis limpia de Razor -->
+                        <option value="Vigente" selected="@(Model.EstadoOferta == "Vigente")">Vigente</option>
+                        <option value="Cerrada" selected="@(Model.EstadoOferta == "Cerrada")">Cerrada</option>
+                    </select>
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a href="/Oferta/Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>

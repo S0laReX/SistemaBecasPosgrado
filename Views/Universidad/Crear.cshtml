@@ -1,0 +1,37 @@
+﻿@model SistemaBecasWeb.Models.UniversidadViewModel
+
+<div class="container mt-4">
+    <h2>@(Model.IdUniversidad == 0 ? "Crear Nueva Universidad" : "Editar Universidad")</h2>
+
+    <div class="card p-4 shadow-sm w-50">
+        <!-- El formulario detecta si es Crear o Editar -->
+        <form method="post" action="/Universidad/@(Model.IdUniversidad == 0 ? "Crear" : "Editar")">
+
+            <input type="hidden" name="IdUniversidad" value="@Model.IdUniversidad" />
+
+            <div class="mb-2">
+                <label>Nombre:</label>
+                <input type="text" name="Nombre" value="@Model.Nombre" class="form-control" required />
+            </div>
+            <div class="mb-2">
+                <label>País:</label>
+                <input type="text" name="Pais" value="@Model.Pais" class="form-control" required />
+            </div>
+            <div class="mb-2">
+                <label>Ciudad:</label>
+                <input type="text" name="Ciudad" value="@Model.Ciudad" class="form-control" required />
+            </div>
+            <div class="mb-2">
+                <label>Dirección:</label>
+                <input type="text" name="Direccion" value="@Model.Direccion" class="form-control" />
+            </div>
+            <div class="mb-3">
+                <label>Teléfono:</label>
+                <input type="text" name="Telefono" value="@Model.Telefono" class="form-control" />
+            </div>
+
+            <button type="submit" class="btn btn-success">Guardar</button>
+            <a href="/Universidad/Index" class="btn btn-secondary">Cancelar</a>
+        </form>
+    </div>
+</div>
