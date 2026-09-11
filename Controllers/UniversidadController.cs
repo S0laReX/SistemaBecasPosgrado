@@ -1,9 +1,11 @@
-﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc;
 using SistemaBecasWeb.Models;
 using SistemaBecasWeb.Repositories;
+using SistemaBecasWeb.Filters;
 
 namespace SistemaBecasWeb.Controllers
 {
+    [RequiereModoAdmin]
     public class UniversidadController : Controller
     {
         private readonly ISolicitudRepository _repository;

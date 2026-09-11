@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaBecasWeb.Repositories;
+using SistemaBecasWeb.Filters;
 using Oracle.ManagedDataAccess.Client;
 
 namespace SistemaBecasWeb.Controllers
@@ -13,11 +14,12 @@ namespace SistemaBecasWeb.Controllers
             _repository = repository;
         }
 
-        // GET: Carga el formulario inicial
+        // GET: Carga el formulario inicial. Si viene idOferta (desde la portada), se preselecciona.
         [HttpGet]
-        public IActionResult Index()
+        public IActionResult Index(int? idOferta)
         {
             ViewBag.Ofertas = _repository.ObtenerOfertasVigentes();
+            ViewBag.OfertaSeleccionada = idOferta;
             return View();
         }
 
@@ -53,6 +55,32 @@ namespace SistemaBecasWeb.Controllers
                 TempData["Error"] = ex.Message;
             }
             return RedirectToAction("Index");
+        }
+
+        // GET: Panel administrativo - lista todas las solicitudes (Pendiente/Aceptada/Rechazada)
+        [HttpGet]
+        [RequiereModoAdmin]
+        public IActionResult Administrar()
+        {
+            var solicitudes = _repository.ObtenerSolicitudes();
+            return View(solicitudes);
+        }
+
+        // POST: Acepta una solicitud puntual (llama a fn_aceptar_solicitud)
+        [HttpPost]
+        [RequiereModoAdmin]
+        public IActionResult Aceptar(int idSolicitud)
+        {
+            try
+            {
+                string mensajeBD = _repository.AceptarSolicitud(idSolicitud);
+                TempData["Exito"] = mensajeBD;
+            }
+            catch (OracleException ex)
+            {
+                TempData["Error"] = ex.Message;
+            }
+            return RedirectToAction("Administrar");
         }
     }
 }

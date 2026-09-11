@@ -1,43 +1,59 @@
-﻿@model SistemaBecasWeb.Models.PostulanteViewModel
+@model SistemaBecasWeb.Models.PostulanteViewModel
+@{
+    ViewData["Title"] = "Crear mi perfil";
+}
 
-<div class="container mt-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-6">
-            <div class="card shadow-sm p-4">
-                <h3 class="mb-4">Registro de Postulante - Paso 1</h3>
+        <div class="col-lg-7">
+
+            <div class="pasos-indicador">
+                <div class="paso activo">
+                    <span class="paso-num">1</span> Datos personales
+                </div>
+                <div class="separador"></div>
+                <div class="paso">
+                    <span class="paso-num">2</span> Experiencia laboral
+                </div>
+            </div>
+
+            <div class="card-portal p-4">
+                <h2 class="section-title">Crea tu perfil de postulante</h2>
+                <p class="section-subtitle">Estos datos se usaran en todas tus postulaciones a programas de posgrado.</p>
 
                 <form method="post" action="/Postulante/Crear">
                     <div class="mb-3">
-                        <label>Documento de Identidad:</label>
+                        <label class="form-label">Documento de identidad</label>
                         <input type="text" name="DocIdentidad" class="form-control" placeholder="Ej: 1234567" required />
                     </div>
 
-                    <div class="mb-3">
-                        <label>Nombres:</label>
-                        <input type="text" name="Nombres" class="form-control" required />
+                    <div class="row">
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Nombres</label>
+                            <input type="text" name="Nombres" class="form-control" required />
+                        </div>
+                        <div class="col-md-6 mb-3">
+                            <label class="form-label">Apellidos</label>
+                            <input type="text" name="Apellidos" class="form-control" required />
+                        </div>
                     </div>
 
                     <div class="mb-3">
-                        <label>Apellidos:</label>
-                        <input type="text" name="Apellidos" class="form-control" required />
-                    </div>
-
-                    <div class="mb-3">
-                        <label>Correo Electrónico:</label>
+                        <label class="form-label">Correo electronico</label>
                         <input type="email" name="Correo" class="form-control" required />
                     </div>
 
                     <div class="mb-4">
-                        <label>Nivel de Formación:</label>
+                        <label class="form-label">Nivel de formacion actual</label>
                         <select name="NivelFormacion" class="form-select" required>
-                            <option value="">-- Seleccione un Nivel --</option>
+                            <option value="">-- Selecciona un nivel --</option>
                             <option value="Licenciatura">Licenciatura</option>
-                            <option value="Ingeniería">Ingeniería</option>
-                            <option value="Maestría">Maestría</option>
+                            <option value="Ingenieria">Ingenieria</option>
+                            <option value="Maestria">Maestria</option>
                         </select>
                     </div>
 
-                    <button type="submit" class="btn btn-primary w-100">Guardar y Continuar al Historial Laboral</button>
+                    <button type="submit" class="btn btn-portal-primary w-100">Continuar a experiencia laboral</button>
                 </form>
             </div>
         </div>

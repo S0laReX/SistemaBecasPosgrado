@@ -1,55 +1,97 @@
-﻿<!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Sistema de Posgrado</title>
-    <!-- Bootstrap 5 para un diseño limpio y moderno -->
+    <title>@ViewData["Title"] - Portal de Becas de Posgrado</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <link href="~/css/portal.css" rel="stylesheet" asp-append-version="true">
     <style>
-            /* Un pequeño ajuste para que la página ocupe todo el alto y el footer quede abajo */
-            html, body { height: 100%; }
-            body { display: flex; flex-direction: column; }
-            .content-flex { flex: 1 0 auto; }
-            .footer { flex-shrink: 0; }
+        html, body { height: 100%; }
+        body { display: flex; flex-direction: column; }
+        .content-flex { flex: 1 0 auto; }
+        .footer { flex-shrink: 0; }
     </style>
 </head>
 <body>
+    @{
+        var modoActual = SistemaBecasWeb.Filters.ModoVista.ObtenerModo(Context.Request);
+        var esAdmin = modoActual == SistemaBecasWeb.Filters.ModoVista.Admin;
+        var rutaActual = Context.Request.Path + Context.Request.QueryString;
+    }
     <header>
-        <nav class="navbar navbar-expand-lg navbar-dark bg-dark shadow-sm">
+        <nav class="navbar navbar-expand-lg navbar-dark navbar-portal">
             <div class="container">
-                <a class="navbar-brand fw-bold" href="/Solicitud/Index">🎓 Becas Posgrado</a>
+                <a class="navbar-brand" href="/">
+                    Becas Posgrado
+                    <span class="badge modo-badge @(esAdmin ? "modo-badge-admin" : "modo-badge-postulante")">
+                        @(esAdmin ? "Modo Administrador" : "Modo Postulante")
+                    </span>
+                </a>
 
-                <!-- Botón hamburguesa para móviles -->
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                     <span class="navbar-toggler-icon"></span>
                 </button>
 
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                        <!-- Módulo Principal (Transacciones PL/SQL) -->
-                        <li class="nav-item">
-                            <a class="nav-link text-white" href="/Solicitud/Index">Postulaciones</a>
-                        </li>
+                    @if (!esAdmin)
+                    {
+                        <!-- Portal publico: lo que ve un postulante -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/">Programas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Postulante/Crear">Crear mi perfil</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Solicitud/Index">Postularme</a>
+                            </li>
+                        </ul>
+                    }
+                    else
+                    {
+                        <!-- Panel administrativo: catalogos, CRUDs y solicitudes -->
+                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Solicitud/Administrar">Solicitudes</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Postulante/Index">Candidatos</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Oferta/Index">Ofertas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Programa/Index">Programas</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Universidad/Index">Universidades</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link" href="/Sede/Index">Sedes</a>
+                            </li>
+                        </ul>
+                    }
 
-                        <!-- Separador visual -->
-                        <li class="nav-item d-none d-lg-block"><span class="nav-link text-secondary">|</span></li>
-
-                        <!-- Catálogos (CRUDs) -->
+                    <!-- Boton para alternar entre el portal publico y el panel administrativo -->
+                    <ul class="navbar-nav">
                         <li class="nav-item">
-                            <a class="nav-link" href="/Postulante/Index">Candidatos</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Oferta/Index">Ofertas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Programa/Index">Programas</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Universidad/Index">Universidades</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="/Sede/Index">Sedes</a>
+                            @if (!esAdmin)
+                            {
+                                <a class="btn btn-sm btn-portal-outline btn-modo"
+                                   href="/Home/CambiarModo?modo=admin&returnUrl=@Uri.EscapeDataString("/Solicitud/Administrar")">
+                                    Entrar como Administrador
+                                </a>
+                            }
+                            else
+                            {
+                                <a class="btn btn-sm btn-portal-outline btn-modo"
+                                   href="/Home/CambiarModo?modo=postulante&returnUrl=@Uri.EscapeDataString("/")">
+                                    Volver al portal público
+                                </a>
+                            }
                         </li>
                     </ul>
                 </div>
@@ -57,21 +99,18 @@
         </nav>
     </header>
 
-    <!-- Contenedor dinámico donde Razor inyecta las otras vistas -->
-    <div class="container content-flex mt-4">
-        <main role="main" class="pb-3">
+    <div class="content-flex">
+        <main role="main">
             @RenderBody()
         </main>
     </div>
 
-    <!-- Pie de página -->
-    <footer class="footer bg-light text-center text-muted py-3 mt-auto shadow-sm">
+    <footer class="footer bg-light text-center text-muted py-3 mt-auto" style="border-top: 1px solid #DBD5C6;">
         <div class="container">
-            <small>&copy; 2026 - Sistema de Gestión Académica Objeto-Relacional</small>
+            <small>Sistema de Gestion Academica Objeto-Relacional &mdash; Becas de Posgrado</small>
         </div>
     </footer>
 
-    <!-- Script de Bootstrap para que funcione el menú desplegable en móviles -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
 </body>
 </html>

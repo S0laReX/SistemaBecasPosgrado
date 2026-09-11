@@ -1,0 +1,76 @@
+﻿@model IEnumerable<SistemaBecasWeb.Models.SolicitudViewModel>
+@{
+    ViewData["Title"] = "Administrar Solicitudes";
+}
+
+<div class="container-fluid px-4">
+    <div class="d-flex justify-content-between mb-3 mt-4">
+        <h2>Solicitudes de Postulación</h2>
+    </div>
+
+    @if (TempData["Exito"] != null)
+    {
+        <div class="alert alert-success">@TempData["Exito"]</div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger">@TempData["Error"]</div>
+    }
+
+    <table class="table table-bordered table-striped shadow-sm align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>ID</th>
+                <th>Postulante</th>
+                <th>Documento</th>
+                <th>Oferta</th>
+                <th>Resumen de interés</th>
+                <th>Estado</th>
+                <th>Acciones</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var s in Model)
+            {
+                <tr>
+                    <td>@s.IdSolicitud</td>
+                    <td>@s.NombreCompleto</td>
+                    <td>@s.DocIdentidad</td>
+                    <td>@s.NombrePrograma (Oferta #@s.IdOferta)</td>
+                    <td class="small text-muted">@s.ResumenCorto</td>
+                    <td>
+                        @{
+                            var claseBadge = s.Estado switch
+                            {
+                                "Aceptada" => "bg-success",
+                                "Rechazada" => "bg-danger",
+                                _ => "bg-warning text-dark"
+                            };
+                        }
+                        <span class="badge @claseBadge">@s.Estado</span>
+                    </td>
+                    <td>
+                        @if (s.Estado == "Pendiente")
+                        {
+                            <form method="post" action="/Solicitud/Aceptar">
+                                <input type="hidden" name="idSolicitud" value="@s.IdSolicitud" />
+                                <button type="submit" class="btn btn-sm btn-success" onclick="return confirm('¿Aceptar esta solicitud?');">
+                                    Aceptar
+                                </button>
+                            </form>
+                        }
+                        else
+                        {
+                            <span class="text-muted small">Sin acciones</span>
+                        }
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    @if (!Model.Any())
+    {
+        <p class="text-muted">Todavía no hay solicitudes registradas.</p>
+    }
+</div>

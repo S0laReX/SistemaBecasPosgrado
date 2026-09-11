@@ -5,6 +5,7 @@ namespace SistemaBecasWeb.Repositories
     public interface ISolicitudRepository
     {
         List<OfertaViewModel> ObtenerOfertasVigentes();
+        List<OfertaViewModel> ObtenerOfertasVigentesDetalle();
 
         List<UniversidadViewModel> ObtenerUniversidades();
         UniversidadViewModel ObtenerUniversidadPorId(int id);
@@ -13,6 +14,10 @@ namespace SistemaBecasWeb.Repositories
         void EliminarUniversidad(int id);
         string RegistrarSolicitud(string docIdentidad, int idOferta, string resumen);
         int ContarAceptados(int idOferta);
+
+        // Panel administrativo de solicitudes
+        List<SolicitudViewModel> ObtenerSolicitudes();
+        string AceptarSolicitud(int idSolicitud);
 
         List<ProgramaViewModel> ObtenerProgramas();
         ProgramaViewModel ObtenerProgramaPorCod(string cod);

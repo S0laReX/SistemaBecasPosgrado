@@ -1,0 +1,262 @@
+/* ==========================================================
+   Portal de Becas de Posgrado — identidad visual
+   Paleta: azul academico + bronce, tipografia serif + sans
+   ========================================================== */
+
+:root {
+    --color-bg: #F7F5EF;
+    --color-ink: #202836;
+    --color-ink-soft: #5B6472;
+    --color-primary: #1B3358;
+    --color-primary-dark: #101F38;
+    --color-accent: #B8862E;
+    --color-accent-soft: #EFE3CC;
+    --color-border: #DBD5C6;
+    --color-card-bg: #FFFFFF;
+
+    --color-especialidad: #6B7A8F;
+    --color-maestria: #1B3358;
+    --color-doctorado: #7A4B23;
+
+    --font-display: 'Lora', Georgia, serif;
+    --font-body: 'Inter', -apple-system, Segoe UI, Roboto, sans-serif;
+}
+
+body {
+    background-color: var(--color-bg);
+    color: var(--color-ink);
+    font-family: var(--font-body);
+}
+
+/* ---------- Barra de navegacion ---------- */
+.navbar-portal {
+    background-color: var(--color-primary-dark) !important;
+    border-bottom: 3px solid var(--color-accent);
+}
+
+.navbar-portal .navbar-brand {
+    font-family: var(--font-display);
+    font-size: 1.35rem;
+    letter-spacing: 0.01em;
+}
+
+.navbar-portal .nav-link {
+    color: rgba(255,255,255,0.85) !important;
+}
+
+.navbar-portal .nav-link:hover {
+    color: #ffffff !important;
+}
+
+.navbar-portal .dropdown-menu {
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}
+
+/* ---------- Badge e interruptor de modo (Postulante / Administrador) ---------- */
+.modo-badge {
+    font-size: 0.65rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+    vertical-align: middle;
+    margin-left: 0.5rem;
+}
+
+.modo-badge-postulante {
+    background-color: var(--color-accent);
+    color: #201a0e;
+}
+
+.modo-badge-admin {
+    background-color: #7A4B23;
+    color: #fff;
+}
+
+.btn-modo {
+    background-color: transparent;
+    border-color: rgba(255, 255, 255, 0.6);
+    color: #fff !important;
+}
+
+.btn-modo:hover {
+    background-color: var(--color-accent);
+    border-color: var(--color-accent);
+    color: var(--color-primary-dark) !important;
+}
+
+/* ---------- Hero de la portada ---------- */
+.hero-portal {
+    padding: 4rem 0 3rem 0;
+    border-bottom: 1px solid var(--color-border);
+}
+
+.hero-portal h1 {
+    font-family: var(--font-display);
+    font-size: 2.75rem;
+    line-height: 1.15;
+    color: var(--color-primary-dark);
+    max-width: 18ch;
+}
+
+.hero-portal p.lead {
+    max-width: 52ch;
+    color: var(--color-ink-soft);
+    font-size: 1.05rem;
+}
+
+.hero-stats {
+    border-left: 1px solid var(--color-border);
+    padding-left: 2rem;
+}
+
+.hero-stats .stat-number {
+    font-family: var(--font-display);
+    font-size: 2.1rem;
+    color: var(--color-primary);
+    line-height: 1;
+}
+
+.hero-stats .stat-label {
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+}
+
+.btn-portal-primary {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.btn-portal-primary:hover {
+    background-color: var(--color-primary-dark);
+    border-color: var(--color-primary-dark);
+    color: #fff;
+}
+
+.btn-portal-outline {
+    background-color: transparent;
+    border-color: var(--color-primary);
+    color: var(--color-primary);
+}
+
+.btn-portal-outline:hover {
+    background-color: var(--color-accent-soft);
+    border-color: var(--color-primary);
+    color: var(--color-primary-dark);
+}
+
+/* ---------- Tarjetas de programa ---------- */
+.section-title {
+    font-family: var(--font-display);
+    color: var(--color-primary-dark);
+    font-size: 1.6rem;
+    margin-bottom: 0.25rem;
+}
+
+.section-subtitle {
+    color: var(--color-ink-soft);
+    margin-bottom: 2rem;
+}
+
+.programa-card {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-left: 5px solid var(--color-maestria);
+    border-radius: 3px;
+    padding: 1.5rem;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+}
+
+.programa-card.tipo-especialidad { border-left-color: var(--color-especialidad); }
+.programa-card.tipo-maestria     { border-left-color: var(--color-maestria); }
+.programa-card.tipo-doctorado    { border-left-color: var(--color-doctorado); }
+
+.programa-card .universidad-label {
+    color: var(--color-ink-soft);
+    font-size: 0.85rem;
+    margin-bottom: 0.35rem;
+}
+
+.programa-card h3 {
+    font-family: var(--font-display);
+    font-size: 1.25rem;
+    color: var(--color-ink);
+    margin-bottom: 0.5rem;
+}
+
+.programa-card .meta-line {
+    color: var(--color-ink-soft);
+    font-size: 0.88rem;
+    margin-bottom: 0.2rem;
+}
+
+.badge-tipo {
+    display: inline-block;
+    font-size: 0.78rem;
+    padding: 0.2rem 0.6rem;
+    border-radius: 3px;
+    margin-bottom: 0.75rem;
+    background-color: var(--color-accent-soft);
+    color: var(--color-primary-dark);
+}
+
+.programa-card .financiamiento {
+    margin-top: auto;
+    padding-top: 0.75rem;
+    border-top: 1px dashed var(--color-border);
+    font-size: 0.88rem;
+    color: var(--color-ink-soft);
+}
+
+/* ---------- Indicador de pasos (registro de postulante) ---------- */
+.pasos-indicador {
+    display: flex;
+    align-items: center;
+    margin-bottom: 2rem;
+}
+
+.pasos-indicador .paso {
+    display: flex;
+    align-items: center;
+    color: var(--color-ink-soft);
+    font-size: 0.9rem;
+}
+
+.pasos-indicador .paso.activo {
+    color: var(--color-primary-dark);
+    font-weight: 600;
+}
+
+.pasos-indicador .paso-num {
+    width: 1.75rem;
+    height: 1.75rem;
+    border-radius: 50%;
+    border: 1px solid var(--color-border);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 0.5rem;
+    font-size: 0.85rem;
+}
+
+.pasos-indicador .paso.activo .paso-num {
+    background-color: var(--color-primary);
+    border-color: var(--color-primary);
+    color: #fff;
+}
+
+.pasos-indicador .separador {
+    flex: 1;
+    height: 1px;
+    background-color: var(--color-border);
+    margin: 0 1rem;
+}
+
+.card-portal {
+    background: var(--color-card-bg);
+    border: 1px solid var(--color-border);
+    border-radius: 4px;
+}

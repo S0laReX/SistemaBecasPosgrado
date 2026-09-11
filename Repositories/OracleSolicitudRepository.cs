@@ -42,6 +42,53 @@ namespace SistemaBecasWeb.Repositories
             return lista;
         }
 
+        // Trae las ofertas vigentes con datos del programa y la universidad (navegando REF -> REF)
+        // para mostrarlas como tarjetas en el portal público del postulante.
+        public List<OfertaViewModel> ObtenerOfertasVigentesDetalle()
+        {
+            List<OfertaViewModel> lista = new List<OfertaViewModel>();
+
+            using (OracleConnection conn = new OracleConnection(_connectionString))
+            {
+                string sql = @"SELECT o.id_oferta, o.fecha_inicio, o.fecha_fin,
+                              o.tipo_financiamiento, o.estado_oferta,
+                              o.ref_programa.cod_programa AS cod_prog,
+                              o.ref_programa.nombre AS nombre_prog,
+                              o.ref_programa.area AS area,
+                              o.ref_programa.tipo_programa AS tipo_prog,
+                              o.ref_programa.modalidad AS modalidad,
+                              o.ref_programa.ref_universidad.nombre AS nombre_univ
+                       FROM ofertas o
+                       WHERE o.estado_oferta = 'Vigente'
+                       ORDER BY o.fecha_inicio";
+
+                OracleCommand cmd = new OracleCommand(sql, conn);
+                conn.Open();
+
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lista.Add(new OfertaViewModel
+                        {
+                            IdOferta = Convert.ToInt32(reader["id_oferta"]),
+                            FechaInicio = Convert.ToDateTime(reader["fecha_inicio"]),
+                            FechaFin = Convert.ToDateTime(reader["fecha_fin"]),
+                            TipoFinanciamiento = reader["tipo_financiamiento"].ToString(),
+                            EstadoOferta = reader["estado_oferta"].ToString(),
+                            CodPrograma = reader["cod_prog"].ToString(),
+                            NombrePrograma = reader["nombre_prog"].ToString(),
+                            Area = reader["area"] == DBNull.Value ? "" : reader["area"].ToString(),
+                            TipoPrograma = reader["tipo_prog"] == DBNull.Value ? "" : reader["tipo_prog"].ToString(),
+                            Modalidad = reader["modalidad"] == DBNull.Value ? "" : reader["modalidad"].ToString(),
+                            NombreUniversidad = reader["nombre_univ"] == DBNull.Value ? "" : reader["nombre_univ"].ToString()
+                        });
+                    }
+                }
+            }
+            return lista;
+        }
+
         public string RegistrarSolicitud(string docIdentidad, int idOferta, string resumen)
         {
             using (OracleConnection conn = new OracleConnection(_connectionString))
@@ -87,6 +134,70 @@ namespace SistemaBecasWeb.Repositories
                     cmd.ExecuteNonQuery();
                     // Castear el resultado Decimal de Oracle a int de C#
                     return Convert.ToInt32(retVal.Value.ToString());
+                }
+            }
+        }
+
+        // Trae todas las solicitudes con los datos de postulante y programa ya resueltos
+        // (navegando ref_postulante y ref_oferta.ref_programa) para el panel administrativo.
+        public List<SolicitudViewModel> ObtenerSolicitudes()
+        {
+            List<SolicitudViewModel> lista = new List<SolicitudViewModel>();
+
+            using (OracleConnection conn = new OracleConnection(_connectionString))
+            {
+                string sql = @"SELECT s.id_solicitud,
+                              s.ref_postulante.doc_identidad AS doc,
+                              s.ref_postulante.nombres AS nombres,
+                              s.ref_postulante.apellidos AS apellidos,
+                              s.ref_oferta.id_oferta AS id_oferta,
+                              s.ref_oferta.ref_programa.nombre AS nombre_prog,
+                              DBMS_LOB.SUBSTR(s.resumen_interes, 200, 1) AS resumen,
+                              s.estado AS estado
+                       FROM solicitudes s
+                       ORDER BY s.id_solicitud DESC";
+
+                OracleCommand cmd = new OracleCommand(sql, conn);
+                conn.Open();
+
+                using (OracleDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        lista.Add(new SolicitudViewModel
+                        {
+                            IdSolicitud = Convert.ToInt32(reader["id_solicitud"]),
+                            DocIdentidad = reader["doc"].ToString(),
+                            NombreCompleto = $"{reader["nombres"]} {reader["apellidos"]}",
+                            IdOferta = Convert.ToInt32(reader["id_oferta"]),
+                            NombrePrograma = reader["nombre_prog"].ToString(),
+                            ResumenCorto = reader["resumen"] == DBNull.Value ? "" : reader["resumen"].ToString(),
+                            Estado = reader["estado"].ToString()
+                        });
+                    }
+                }
+            }
+            return lista;
+        }
+
+        // Llama a fn_aceptar_solicitud, que cambia el estado a 'Aceptada' (o avisa si ya lo estaba)
+        public string AceptarSolicitud(int idSolicitud)
+        {
+            using (OracleConnection conn = new OracleConnection(_connectionString))
+            {
+                conn.Open();
+                using (OracleCommand cmd = new OracleCommand("fn_aceptar_solicitud", conn))
+                {
+                    cmd.CommandType = CommandType.StoredProcedure;
+
+                    OracleParameter retVal = new OracleParameter("RetVal", OracleDbType.Varchar2, 500);
+                    retVal.Direction = ParameterDirection.ReturnValue;
+                    cmd.Parameters.Add(retVal);
+
+                    cmd.Parameters.Add("p_id_solicitud", OracleDbType.Decimal).Value = idSolicitud;
+
+                    cmd.ExecuteNonQuery();
+                    return retVal.Value.ToString();
                 }
             }
         }
