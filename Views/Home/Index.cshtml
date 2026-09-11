@@ -1,8 +1,79 @@
-﻿@{
-    ViewData["Title"] = "Home Page";
+@model List<SistemaBecasWeb.Models.OfertaViewModel>
+@{
+    ViewData["Title"] = "Becas de Posgrado";
+    var universidades = Model.Select(o => o.NombreUniversidad).Distinct().Count();
 }
 
-<div class="text-center">
-    <h1 class="display-4">Welcome</h1>
-    <p>Learn about <a href="https://learn.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>
-</div>
+<section class="hero-portal">
+    <div class="container">
+        <div class="row align-items-center">
+            <div class="col-lg-7">
+                <h1>Tu siguiente paso academico empieza aqui</h1>
+                <p class="lead mt-3">
+                    Explora becas de posgrado vigentes en universidades de Bolivia y postula
+                    a especialidades, maestrias y doctorados sin salir de esta pagina.
+                </p>
+                <div class="mt-4 d-flex gap-3 flex-wrap">
+                    <a href="/Postulante/Crear" class="btn btn-portal-primary btn-lg px-4">Crear mi perfil</a>
+                    <a href="#programas" class="btn btn-portal-outline btn-lg px-4">Ver programas disponibles</a>
+                </div>
+            </div>
+            <div class="col-lg-4 offset-lg-1 mt-4 mt-lg-0">
+                <div class="hero-stats">
+                    <div class="mb-3">
+                        <div class="stat-number">@Model.Count</div>
+                        <div class="stat-label">convocatorias abiertas</div>
+                    </div>
+                    <div>
+                        <div class="stat-number">@universidades</div>
+                        <div class="stat-label">universidades participantes</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<section id="programas" class="container py-5">
+    <h2 class="section-title">Programas con convocatoria abierta</h2>
+    <p class="section-subtitle">Selecciona un programa para conocer sus detalles y enviar tu postulacion.</p>
+
+    @if (Model.Count == 0)
+    {
+        <div class="card-portal p-5 text-center">
+            <p class="mb-2" style="font-size:1.1rem;">Por el momento no hay convocatorias abiertas.</p>
+            <p class="text-muted mb-0">Vuelve a revisar pronto, o crea tu perfil para estar listo cuando se abra una nueva oferta.</p>
+        </div>
+    }
+    else
+    {
+        <div class="row g-4">
+            @foreach (var oferta in Model)
+            {
+                var tipoClase = (oferta.TipoPrograma ?? "").ToLower() switch
+                {
+                    var t when t.Contains("doctorado") => "tipo-doctorado",
+                    var t when t.Contains("especialidad") => "tipo-especialidad",
+                    _ => "tipo-maestria"
+                };
+
+                <div class="col-md-6 col-lg-4">
+                    <div class="programa-card @tipoClase">
+                        <div class="universidad-label">@oferta.NombreUniversidad</div>
+                        <span class="badge-tipo">@oferta.TipoPrograma</span>
+                        <h3>@oferta.NombrePrograma</h3>
+                        <div class="meta-line">Area: @oferta.Area</div>
+                        <div class="meta-line">Modalidad: @oferta.Modalidad</div>
+                        <div class="meta-line">
+                            Postulacion vigente hasta @oferta.FechaFin.ToString("dd/MM/yyyy")
+                        </div>
+                        <div class="financiamiento">@oferta.TipoFinanciamiento</div>
+                        <a href="/Solicitud/Index?idOferta=@oferta.IdOferta" class="btn btn-portal-primary w-100 mt-3">
+                            Postularme a este programa
+                        </a>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+</section>

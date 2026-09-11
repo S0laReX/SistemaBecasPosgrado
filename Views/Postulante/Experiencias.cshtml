@@ -1,55 +1,65 @@
-﻿@model SistemaBecasWeb.Models.ExperienciaViewModel
+@model SistemaBecasWeb.Models.ExperienciaViewModel
+@{
+    ViewData["Title"] = "Experiencia laboral";
+}
 
-<div class="container mt-4">
+<div class="container py-5">
     <div class="row justify-content-center">
-        <div class="col-md-8">
+        <div class="col-lg-8">
+
+            <div class="pasos-indicador">
+                <div class="paso">
+                    <span class="paso-num">1</span> Datos personales
+                </div>
+                <div class="separador"></div>
+                <div class="paso activo">
+                    <span class="paso-num">2</span> Experiencia laboral
+                </div>
+            </div>
 
             @if (TempData["Exito"] != null)
             {
                 <div class="alert alert-success">@TempData["Exito"]</div>
             }
 
-            <div class="card shadow-sm p-4">
-                <h3 class="mb-3">Paso 2: Historial Laboral</h3>
-                <p class="text-muted">Agregando experiencias para el postulante CI: <strong>@Model.DocIdentidad</strong></p>
-                <hr />
+            <div class="card-portal p-4">
+                <h2 class="section-title">Cuentanos tu experiencia laboral</h2>
+                <p class="section-subtitle">
+                    Perfil CI <strong>@Model.DocIdentidad</strong>. Puedes agregar mas de una experiencia,
+                    o continuar directamente si prefieres completarla despues.
+                </p>
 
                 <form method="post" action="/Postulante/AgregarExperiencia">
-                    <!-- Campo oculto para mandar el CI al controlador -->
                     <input type="hidden" name="DocIdentidad" value="@Model.DocIdentidad" />
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label>Empresa:</label>
+                            <label class="form-label">Empresa</label>
                             <input type="text" name="Empresa" class="form-control" required />
                         </div>
                         <div class="col-md-6 mb-3">
-                            <label>Cargo Ocupado:</label>
+                            <label class="form-label">Cargo ocupado</label>
                             <input type="text" name="Cargo" class="form-control" required />
                         </div>
                     </div>
 
                     <div class="row">
                         <div class="col-md-6 mb-3">
-                            <label>Fecha de Inicio:</label>
+                            <label class="form-label">Fecha de inicio</label>
                             <input type="date" name="FechaInicio" value="@Model.FechaInicio.ToString("yyyy-MM-dd")" class="form-control" required />
                         </div>
                         <div class="col-md-6 mb-4">
-                            <label>Fecha de Finalización (Dejar vacío si aplica):</label>
+                            <label class="form-label">Fecha de finalizacion (dejar vacio si sigues ahi)</label>
                             <input type="date" name="FechaFin" class="form-control" />
                         </div>
                     </div>
 
-                    <div class="d-flex justify-content-between">
-                        <!-- El botón para seguir ciclando en la misma página -->
-                        <button type="submit" class="btn btn-success">+ Agregar esta Experiencia</button>
-
-                        <!-- El botón para ir finalmente al menú de postularse a la oferta -->
-                        <a href="/Solicitud/Index" class="btn btn-secondary">Finalizar y Postular a Programa</a>
+                    <div class="d-flex justify-content-between flex-wrap gap-2">
+                        <button type="submit" class="btn btn-portal-outline">Agregar esta experiencia</button>
+                        <a href="/Solicitud/Index" class="btn btn-portal-primary">Finalizar y postular a un programa</a>
                     </div>
                 </form>
             </div>
-
         </div>
     </div>
 </div>

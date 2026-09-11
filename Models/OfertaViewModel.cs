@@ -11,5 +11,11 @@
         // Datos del Programa Relacionado (REF)
         public string CodPrograma { get; set; }
         public string NombrePrograma { get; set; }
+
+        // Datos adicionales para el portal comercial (navegando REF -> REF)
+        public string Area { get; set; }
+        public string TipoPrograma { get; set; }   // Especialidad, Maestría, Doctorado
+        public string Modalidad { get; set; }
+        public string NombreUniversidad { get; set; }
     }
 }

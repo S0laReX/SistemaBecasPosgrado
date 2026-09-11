@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SistemaBecasWeb.Models;
 using SistemaBecasWeb.Repositories;
+using SistemaBecasWeb.Filters;
 
 namespace SistemaBecasWeb.Controllers
 {
@@ -13,7 +14,10 @@ namespace SistemaBecasWeb.Controllers
             _repository = repository;
         }
 
+        // Solo esta acción es administrativa (ver el listado de candidatos).
+        // Crear/Experiencias siguen públicas para que el postulante arme su perfil.
         [HttpGet]
+        [RequiereModoAdmin]
         public IActionResult Index()
         {
             var postulantes = _repository.ObtenerPostulantes();
