@@ -60,7 +60,8 @@ namespace SistemaBecasWeb.Repositories
                               o.ref_programa.ref_universidad.nombre AS nombre_univ
                        FROM ofertas o
                        WHERE o.estado_oferta = 'Vigente'
-                       ORDER BY o.fecha_inicio";
+                         AND TRUNC(SYSDATE) BETWEEN TRUNC(o.fecha_inicio) AND TRUNC(o.fecha_fin)
+                       ORDER BY o.fecha_fin, o.id_oferta";
 
                 OracleCommand cmd = new OracleCommand(sql, conn);
                 conn.Open();
