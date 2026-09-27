@@ -135,7 +135,7 @@ main > h1, main > h2, main .d-flex > h2 { font-family: Georgia, serif; color: va
 }
 @media (prefers-reduced-motion: reduce) { *, *::before, *::after { scroll-behavior: auto !important; transition: none !important; } }
 
-/* Proyecto en equipo: una vista de planificación independiente de la base de datos. */
+/* Operaciones PL/SQL: gestión académica conectada con Oracle. */
 .team-hero { display: flex; justify-content: space-between; align-items: stretch; gap: 42px; padding: 38px 44px; background: var(--navy); color: white; border-radius: 7px; position: relative; overflow: hidden; }
 .team-hero::after { content: ""; position: absolute; width: 360px; height: 360px; border: 1px solid #ffffff1b; border-radius: 50%; right: -130px; top: -160px; pointer-events: none; }
 .team-hero-copy { position: relative; z-index: 1; max-width: 720px; }
@@ -161,7 +161,8 @@ main > h1, main > h2, main .d-flex > h2 { font-family: Georgia, serif; color: va
 .team-operation { display: flex; flex-direction: column; min-width: 0; background: white; border: 1px solid var(--line); border-top: 3px solid var(--gold); border-radius: 5px; padding: 25px 24px 0; box-shadow: 0 4px 16px #172d4d08; }
 .team-operation-top { display: flex; justify-content: space-between; align-items: start; gap: 10px; margin-bottom: 30px; }
 .team-operation-number { color: var(--gold); font-family: Georgia, serif; font-size: 2.35rem; line-height: 1; }
-.team-owner { color: #42516a; background: #edf1f6; padding: 6px 9px; border-radius: 3px; font-size: .65rem; font-weight: 700; white-space: nowrap; }
+.team-operation-status { color: #42516a; background: #edf1f6; padding: 6px 9px; border-radius: 3px; font-size: .65rem; font-weight: 700; white-space: nowrap; }
+.team-operation-status.is-ready { color: #1d6347; background: #e3f3e8; }
 .team-kicker { color: #806735; font-size: .59rem; letter-spacing: 1.15px; font-weight: 700; }
 .team-operation h3 { color: var(--navy); font-family: Georgia, serif; font-size: 1.42rem; font-weight: 400; line-height: 1.25; margin: 9px 0 11px; min-height: 3.55rem; }
 .team-operation > p { color: var(--muted); font-size: .79rem; line-height: 1.65; min-height: 5.2rem; margin: 0; }

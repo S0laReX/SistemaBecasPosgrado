@@ -1,6 +1,6 @@
 @model SistemaBecasWeb.Models.ProyectoEquipoViewModel
 @{
-    ViewData["Title"] = "Proyecto en equipo";
+    ViewData["Title"] = "Operaciones PL/SQL";
     var correoExito = TempData["CorreoExito"] as string;
     var transferenciaExito = TempData["TransferenciaExito"] as string;
     var operacionActiva = ViewData["OperacionActiva"] as string;
@@ -10,37 +10,36 @@
 <nav class="academic-breadcrumb" aria-label="Ruta de navegación">
     <a asp-controller="Transacciones" asp-action="Index">Inicio</a>
     <span aria-hidden="true">/</span>
-    <strong>Proyecto en equipo</strong>
+    <strong>Operaciones PL/SQL</strong>
 </nav>
 
 <section class="team-hero" aria-labelledby="team-title">
     <div class="team-hero-copy">
-        <span class="eyebrow">SEGUNDA ETAPA · TRABAJO COLABORATIVO</span>
-        <h1 id="team-title">Tres nuevas operaciones para la gestión de becas</h1>
-        <p>Un espacio de trabajo para planificar, implementar y comprobar tres transacciones PL/SQL sobre la base de datos del proyecto.</p>
+        <span class="eyebrow">GESTIÓN ACADÉMICA · TRANSACCIONES PL/SQL</span>
+        <h1 id="team-title">Operaciones de becas</h1>
+        <p>Actualice datos y gestione postulaciones mediante procedimientos almacenados que aplican las reglas de negocio en Oracle.</p>
         <div class="team-hero-meta">
-            <span><span class="team-meta-mark" aria-hidden="true"></span> 2 integrantes</span>
-            <span><span class="team-meta-mark" aria-hidden="true"></span> 3 operaciones propuestas</span>
-            <span><span class="team-meta-mark" aria-hidden="true"></span> 2 operaciones implementadas · 1 pendiente</span>
+            <span><span class="team-meta-mark" aria-hidden="true"></span> 3 operaciones de gestión</span>
+            <span><span class="team-meta-mark" aria-hidden="true"></span> Validación en la base de datos</span>
         </div>
     </div>
     <div class="team-hero-number" aria-hidden="true"><small>ETAPA</small><strong>02</strong><span>PL/SQL</span></div>
 </section>
 
-<section class="team-overview" aria-label="Estado del módulo">
-    <div><span class="overview-index">01 Y 03 / TUS TRANSACCIONES</span><strong>Correo y transferencia</strong><p>Dos procedimientos y formularios disponibles tras instalar los scripts.</p></div>
-    <div><span class="overview-index">02 / SIGUIENTE PASO</span><strong>Operación del compañero</strong><p>La reprogramación de convocatorias sigue en preparación.</p></div>
-    <div><span class="overview-index">03 / ENTREGA</span><strong>Trabajo en GitHub</strong><p>Tu compañero desarrollará la operación 2 en el mismo proyecto.</p></div>
+<section class="team-overview" aria-label="Cómo usar las operaciones">
+    <div><span class="overview-index">01 / ACCESO</span><strong>Modo Administrador</strong><p>Seleccione este modo para habilitar las operaciones disponibles.</p></div>
+    <div><span class="overview-index">02 / DISPONIBILIDAD</span><strong>Procedimiento en Oracle</strong><p>Cada operación indica si su procedimiento está instalado y listo para ejecutarse.</p></div>
+    <div><span class="overview-index">03 / EJECUCIÓN</span><strong>Datos validados</strong><p>Abra el formulario, introduzca los datos y revise el resultado de la transacción.</p></div>
 </section>
 
 <div class="team-section-title">
-    <div><span class="eyebrow">CASOS DE USO</span><h2>Operaciones propuestas</h2></div>
-    <p>Estas operaciones amplían las cinco transacciones del módulo principal y usan entidades que ya existen en el sistema.</p>
+    <div><span class="eyebrow">CASOS DE USO</span><h2>Transacciones del sistema</h2></div>
+    <p>Estas operaciones amplían las cinco transacciones del módulo principal. Seleccione una para ver sus reglas y ejecutarla cuando esté disponible.</p>
 </div>
 
 <section class="team-operations" aria-label="Tres nuevas transacciones">
     <article class="team-operation" id="transaccion-uno">
-        <div class="team-operation-top"><span class="team-operation-number">01</span><span class="team-owner">Tu parte</span></div>
+        <div class="team-operation-top"><span class="team-operation-number">01</span><span class="team-operation-status @(Model.ProcedimientoDisponible ? "is-ready" : "")">@(Model.ProcedimientoDisponible ? "Disponible" : "Requiere instalación")</span></div>
         <span class="team-kicker">POSTULANTE · ACTUALIZACIÓN</span>
         <h3>Actualizar correo de contacto</h3>
         <p>Permitir que un postulante registrado actualice su correo sin alterar su identidad ni sus solicitudes existentes.</p>
@@ -80,7 +79,7 @@
     </article>
 
     <article class="team-operation" id="transaccion-dos">
-        <div class="team-operation-top"><span class="team-operation-number">02</span><span class="team-owner">Compañero</span></div>
+        <div class="team-operation-top"><span class="team-operation-number">02</span><span class="team-operation-status">En preparación</span></div>
         <span class="team-kicker">CONVOCATORIA · CALENDARIO</span>
         <h3>Reprogramar una convocatoria</h3>
         <p>Modificar las fechas de una convocatoria vigente conservando una ventana de postulación coherente.</p>
@@ -94,7 +93,7 @@
     </article>
 
     <article class="team-operation" id="transaccion-tres">
-        <div class="team-operation-top"><span class="team-operation-number">03</span><span class="team-owner">Tu parte</span></div>
+        <div class="team-operation-top"><span class="team-operation-number">03</span><span class="team-operation-status @(Model.TransferenciaDisponible ? "is-ready" : "")">@(Model.TransferenciaDisponible ? "Disponible" : "Requiere instalación")</span></div>
         <span class="team-kicker">SOLICITUD · REASIGNACIÓN</span>
         <h3>Transferir una postulación pendiente</h3>
         <p>Trasladar una solicitud a otra convocatoria elegible, manteniendo su relación con el mismo postulante.</p>
@@ -153,6 +152,6 @@
 </section>
 
 <section class="team-next-step" aria-labelledby="team-next-title">
-    <div><span class="eyebrow">ESTADO DEL PROYECTO</span><h2 id="team-next-title">Dos operaciones listas para comprobar</h2><p>La actualización de correo y la transferencia de postulaciones usan procedimientos independientes. La reprogramación de convocatorias queda para tu compañero.</p></div>
+    <div><span class="eyebrow">DISPONIBILIDAD</span><h2 id="team-next-title">Operaciones conectadas con Oracle</h2><p>La actualización de correo y la transferencia de postulaciones se pueden ejecutar al instalar sus procedimientos. La reprogramación de convocatorias se habilitará cuando se integre su lógica y formulario.</p></div>
     <a class="btn btn-outline-light" asp-controller="Transacciones" asp-action="Index">Ver módulo actual <span aria-hidden="true">↗</span></a>
 </section>

@@ -1,7 +1,7 @@
 @{
     var controller = ViewContext.RouteData.Values["controller"]?.ToString();
     var esAdmin = SistemaBecasWeb.Filters.ModoVista.ObtenerModo(Context.Request) == SistemaBecasWeb.Filters.ModoVista.Admin;
-    var seccionesAdmin = new[] { ("Solicitud", "Solicitudes", "Administrar"), ("Transacciones", "Gestión de becas", "Index"), ("NuevasTransacciones", "Proyecto en equipo", "Index"), ("Postulante", "Candidatos", "Index"), ("Oferta", "Ofertas", "Index"), ("Programa", "Programas", "Index"), ("Universidad", "Universidades", "Index"), ("Sede", "Sedes", "Index") };
+    var seccionesAdmin = new[] { ("Solicitud", "Solicitudes", "Administrar"), ("Transacciones", "Gestión de becas", "Index"), ("NuevasTransacciones", "Operaciones PL/SQL", "Index"), ("Postulante", "Candidatos", "Index"), ("Oferta", "Ofertas", "Index"), ("Programa", "Programas", "Index"), ("Universidad", "Universidades", "Index"), ("Sede", "Sedes", "Index") };
 }
 <!DOCTYPE html>
 <html lang="es">
