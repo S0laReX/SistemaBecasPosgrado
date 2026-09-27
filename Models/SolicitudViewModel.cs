@@ -12,7 +12,8 @@
         public string NombreCompleto { get; set; }
 
         // Datos de la oferta (vía ref_oferta -> ref_programa)
-        public int IdOferta { get; set; }
+        // Puede faltar si la oferta referenciada fue eliminada de Oracle.
+        public int? IdOferta { get; set; }
         public string NombrePrograma { get; set; }
 
         // Resumen recortado (el campo real es un CLOB en la BD)

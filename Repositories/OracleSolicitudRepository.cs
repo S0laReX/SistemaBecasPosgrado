@@ -169,8 +169,8 @@ namespace SistemaBecasWeb.Repositories
                             IdSolicitud = Convert.ToInt32(reader["id_solicitud"]),
                             DocIdentidad = reader["doc"].ToString(),
                             NombreCompleto = $"{reader["nombres"]} {reader["apellidos"]}",
-                            IdOferta = Convert.ToInt32(reader["id_oferta"]),
-                            NombrePrograma = reader["nombre_prog"].ToString(),
+                            IdOferta = reader["id_oferta"] == DBNull.Value ? null : Convert.ToInt32(reader["id_oferta"]),
+                            NombrePrograma = reader["nombre_prog"] == DBNull.Value ? "Oferta no disponible" : reader["nombre_prog"].ToString(),
                             ResumenCorto = reader["resumen"] == DBNull.Value ? "" : reader["resumen"].ToString(),
                             Estado = reader["estado"].ToString()
                         });
@@ -562,11 +562,34 @@ namespace SistemaBecasWeb.Repositories
         {
             using (OracleConnection conn = new OracleConnection(_connectionString))
             {
-                string sql = "DELETE FROM ofertas WHERE id_oferta = :id";
-                OracleCommand cmd = new OracleCommand(sql, conn);
-                cmd.Parameters.Add("id", OracleDbType.Decimal).Value = id;
                 conn.Open();
-                cmd.ExecuteNonQuery();
+                using (OracleTransaction transaction = conn.BeginTransaction())
+                {
+                    // Bloquear la oferta mientras se comprueba si tiene solicitudes.
+                    using (OracleCommand lockCommand = new OracleCommand("SELECT id_oferta FROM ofertas WHERE id_oferta = :id FOR UPDATE WAIT 5", conn))
+                    {
+                        lockCommand.Transaction = transaction;
+                        lockCommand.Parameters.Add("id", OracleDbType.Decimal).Value = id;
+                        if (lockCommand.ExecuteScalar() == null)
+                            throw new InvalidOperationException("La oferta ya no existe.");
+                    }
+
+                    using (OracleCommand countCommand = new OracleCommand("SELECT COUNT(*) FROM solicitudes s WHERE s.ref_oferta.id_oferta = :id", conn))
+                    {
+                        countCommand.Transaction = transaction;
+                        countCommand.Parameters.Add("id", OracleDbType.Decimal).Value = id;
+                        if (Convert.ToInt32(countCommand.ExecuteScalar()) > 0)
+                            throw new InvalidOperationException("No se puede eliminar una oferta que tiene solicitudes. Cambie su estado si ya no debe recibir postulaciones.");
+                    }
+
+                    using (OracleCommand deleteCommand = new OracleCommand("DELETE FROM ofertas WHERE id_oferta = :id", conn))
+                    {
+                        deleteCommand.Transaction = transaction;
+                        deleteCommand.Parameters.Add("id", OracleDbType.Decimal).Value = id;
+                        deleteCommand.ExecuteNonQuery();
+                    }
+                    transaction.Commit();
+                }
             }
         }
 

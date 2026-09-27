@@ -4,6 +4,15 @@
     <a href="/Oferta/Crear" class="btn btn-success">Nueva Oferta</a>
 </div>
 
+@if (TempData["Exito"] is string exito)
+{
+    <div class="alert alert-success" role="status">@exito</div>
+}
+@if (TempData["Error"] is string error)
+{
+    <div class="alert alert-danger" role="alert">@error</div>
+}
+
 <table class="table table-bordered table-striped shadow-sm">
     <thead class="table-dark">
         <tr>

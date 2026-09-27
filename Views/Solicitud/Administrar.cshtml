@@ -36,7 +36,7 @@
                     <td>@s.IdSolicitud</td>
                     <td>@s.NombreCompleto</td>
                     <td>@s.DocIdentidad</td>
-                    <td>@s.NombrePrograma (Oferta #@s.IdOferta)</td>
+                    <td>@s.NombrePrograma@if (s.IdOferta.HasValue) { <text> (Oferta #@s.IdOferta)</text> }</td>
                     <td class="small text-muted">@s.ResumenCorto</td>
                     <td>
                         @{
