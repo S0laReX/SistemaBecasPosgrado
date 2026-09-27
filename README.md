@@ -25,6 +25,12 @@ Los procedimientos no confirman internamente: el llamador controla la transacci�
 - `Database/03_cinco_transacciones.sql`: cinco bloques independientes ejecutables, con COMMIT/ROLLBACK, para entregar y exponer.
 - Interfaz `/Transacciones`, documentación y evidencias reales de colaboración en GitHub.
 
+## Segunda etapa: tres operaciones en equipo
+
+La vista `/NuevasTransacciones` presenta tres casos de uso. **La operación 1, actualizar el correo de un postulante, ya está implementada** con el procedimiento independiente `sp_actualizar_correo_postulante`; las operaciones 2 (reprogramar convocatoria) y 3 (transferir una postulación pendiente) permanecen como vista previa para el compañero y el desarrollo conjunto. Explicación detallada de cada construcción PL/SQL de la primera operación: [Transacción 1: actualizar correo](docs/Transaccion_1_Actualizar_Correo.md).
+
+Ejecutar con F5 `Database/04_actualizar_correo_postulante.sql` en el esquema propietario de `POSTULANTES`. Después ejecutar con F5 `Database/05_prueba_actualizar_correo.sql`: la prueba crea datos temporales y los revierte. En la web, usar **Modo Administrador → Proyecto en equipo**. El procedimiento no hace `COMMIT`; la web lo confirma mediante una transacción de ODP.NET. GitHub no instala los objetos en el Oracle del compañero: él debe ejecutar el script 04 en su entorno.
+
 ## SQL Developer: ejecutar
 
 1. Conectarse al esquema propietario de las tablas del proyecto. En el equipo original es SYSTEM en XE. Se requieren POSTULANTES, OFERTAS, SOLICITUDES y sus tipos originales; el panel también consulta referencias a programas.
@@ -53,25 +59,26 @@ Remoto: https://github.com/S0laReX/SistemaBecasPosgrado
 
 | Integrante | Desarrollo propuesto | Revisión cruzada |
 |---|---|---|
-| A | Paquete SQL, reglas, pruebas y exposición T1–T3 | Revisar interfaz, parámetros y mensajes de B. |
-| B | Interfaz MVC, repositorio C#, documentación y exposición T4–T5 | Ejecutar y revisar el SQL de A. |
-| Ambos | Pruebas finales, capturas y explicación de las cinco transacciones | Cada uno debe comprender COMMIT, ROLLBACK y bloqueos. |
+| Integrante de interfaz | Nueva operación 1: correo, formulario y explicación | Revisar la operación 2. |
+| Compañero | Nueva operación 2: reprogramar convocatoria | Revisar la operación 1. |
+| Ambos | Nueva operación 3: transferir solicitud pendiente | Probar la integración y explicar las tres operaciones. |
 
 1. El propietario invita la cuenta del compañero en Settings → Collaborators. No compartir contraseñas ni tokens.
 2. Cada integrante clona el repositorio y configura una copia Oracle de práctica. GitHub comparte código/scripts, NO sincroniza bases de datos. No hace falta exponer el Oracle local a Internet.
-3. Crear ramas desde la principal actual: `codex/plsql-transacciones` y `codex/interfaz-becas`.
-4. Cada uno hace commits de sus contribuciones reales, sube su rama y abre un pull request con evidencia.
-5. El compañero ejecuta, comenta y revisa antes de integrar. Se incluye plantilla de PR y workflow de compilación. El workflow no prueba Oracle porque no tiene una base configurada.
-6. Si el repositorio lo permite, exigir una aprobación antes de integrar. Esa regla no está configurada automáticamente por estos archivos.
+3. Conforme al acuerdo del equipo, trabajar en la rama **`master` ya existente**; no crear ramas nuevas. Antes de empezar, ejecutar `git pull origin master` con el árbol de trabajo limpio.
+4. Cada integrante confirma sus cambios con su propia cuenta de Git y un mensaje descriptivo. Coordinar las modificaciones a archivos compartidos como `_Layout.cshtml` y `Program.cs` para evitar conflictos.
+5. Antes de subir, compilar, revisar `git status`, confirmar los archivos propios y ejecutar `git pull --rebase origin master` si otro integrante publicó antes. Resolver cualquier conflicto antes de `git push origin master`. Nunca usar `--force` para compartir esta rama.
+6. La plantilla de PR y el workflow de compilación siguen disponibles si al final deciden integrar `master` a la rama `main` existente. El workflow no prueba Oracle porque no tiene una base configurada.
 
 ```powershell
-git switch -c codex/plsql-transacciones
-git add Database/01_transacciones.sql Database/02_pruebas.sql Database/03_cinco_transacciones.sql
-git commit -m "Implementa y prueba cinco transacciones PL/SQL"
-git push -u origin codex/plsql-transacciones
+git status
+git add Database/04_actualizar_correo_postulante.sql Database/05_prueba_actualizar_correo.sql Controllers/NuevasTransaccionesController.cs Models/CorreoPostulanteViewModel.cs Repositories/CorreoPostulanteRepository.cs Views/NuevasTransacciones/Index.cshtml Program.cs wwwroot/css/site.css docs/Transaccion_1_Actualizar_Correo.md README.md
+git commit -m "Implementa la primera transacción de la segunda etapa"
+git pull --rebase origin master
+git push origin master
 ```
 
-Adaptar rama y archivos para B. Preparar código no demuestra colaboración: entregar capturas de PRs y revisiones que realmente hayan ocurrido. No se han publicado cambios ni invitaciones desde esta implementación.
+Adaptar los archivos para cada integrante. Preparar código no demuestra colaboración: entregar el historial de commits y revisiones que realmente hayan ocurrido. No se han enviado invitaciones desde esta implementación.
 
 ## Defensa de la tarea
 

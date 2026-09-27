@@ -1,5 +1,8 @@
+@model SistemaBecasWeb.Models.ProyectoEquipoViewModel
 @{
     ViewData["Title"] = "Proyecto en equipo";
+    var correoExito = TempData["CorreoExito"] as string;
+    var esAdmin = SistemaBecasWeb.Filters.ModoVista.ObtenerModo(Context.Request) == SistemaBecasWeb.Filters.ModoVista.Admin;
 }
 
 <nav class="academic-breadcrumb" aria-label="Ruta de navegación">
@@ -16,15 +19,15 @@
         <div class="team-hero-meta">
             <span><span class="team-meta-mark" aria-hidden="true"></span> 2 integrantes</span>
             <span><span class="team-meta-mark" aria-hidden="true"></span> 3 operaciones propuestas</span>
-            <span><span class="team-meta-mark" aria-hidden="true"></span> Implementación pendiente</span>
+            <span><span class="team-meta-mark" aria-hidden="true"></span> 1 operación implementada · 2 pendientes</span>
         </div>
     </div>
     <div class="team-hero-number" aria-hidden="true"><small>ETAPA</small><strong>02</strong><span>PL/SQL</span></div>
 </section>
 
 <section class="team-overview" aria-label="Estado del módulo">
-    <div><span class="overview-index">01 / ALCANCE</span><strong>Diseño de interfaz</strong><p>La navegación y los casos de uso están definidos para revisión.</p></div>
-    <div><span class="overview-index">02 / SIGUIENTE PASO</span><strong>Reglas y sentencias</strong><p>Se incorporarán después de validar esta propuesta.</p></div>
+    <div><span class="overview-index">01 / TU TRANSACCIÓN</span><strong>Actualización de correo</strong><p>Procedimiento y formulario disponibles tras instalar el script.</p></div>
+    <div><span class="overview-index">02 / SIGUIENTE PASO</span><strong>Operación del compañero</strong><p>La reprogramación de convocatorias sigue en preparación.</p></div>
     <div><span class="overview-index">03 / ENTREGA</span><strong>Trabajo en GitHub</strong><p>Cada integrante podrá desarrollar y revisar su parte.</p></div>
 </section>
 
@@ -40,12 +43,38 @@
         <h3>Actualizar correo de contacto</h3>
         <p>Permitir que un postulante registrado actualice su correo sin alterar su identidad ni sus solicitudes existentes.</p>
         <div class="team-operation-divider"></div>
-        <h4>Datos de entrada previstos</h4>
+        <h4>Datos de entrada</h4>
         <div class="team-inputs"><span>Documento de identidad</span><span>Nuevo correo electrónico</span></div>
-        <h4>Reglas de negocio a implementar</h4>
+        <h4>Reglas de negocio implementadas</h4>
         <ul><li>El postulante debe existir.</li><li>El nuevo correo debe tener un formato válido y ser diferente al actual.</li><li>La actualización debe afectar solo al postulante indicado.</li></ul>
-        <details class="team-preview"><summary>Ver formulario previsto</summary><form aria-label="Vista previa para actualizar correo"><fieldset disabled><label for="correo-documento">Documento de identidad</label><input id="correo-documento" class="form-control" placeholder="Ej. 12345678" /><label for="correo-nuevo">Nuevo correo electrónico</label><input id="correo-nuevo" class="form-control" type="email" placeholder="nombre@ejemplo.com" /><button class="btn btn-primary" type="button">Actualizar correo</button></fieldset></form></details>
-        <div class="team-operation-bottom"><span class="team-pending-dot" aria-hidden="true"></span> Interfaz lista · lógica PL/SQL pendiente</div>
+        <details class="team-preview" open="@(correoExito is not null || !ViewData.ModelState.IsValid)">
+            <summary>Actualizar correo de un postulante</summary>
+            @if (correoExito is not null)
+            {
+                <div class="alert alert-success mt-3" role="status">@correoExito</div>
+            }
+            @if (Model.MensajeInstalacion is not null)
+            {
+                <div class="operation-note mt-3" role="status">@Model.MensajeInstalacion</div>
+            }
+            @if (!esAdmin)
+            {
+                <div class="operation-note mt-3">Cambie a Modo Administrador para ejecutar la operación.</div>
+            }
+            <form asp-controller="NuevasTransacciones" asp-action="ActualizarCorreo" method="post" aria-label="Actualizar correo de postulante">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <fieldset disabled="@(!Model.ProcedimientoDisponible || !esAdmin)">
+                    <label asp-for="Correo.Documento">Documento de identidad</label>
+                    <input asp-for="Correo.Documento" class="form-control" placeholder="Ej. 12345678" autocomplete="off" />
+                    <span asp-validation-for="Correo.Documento" class="text-danger"></span>
+                    <label asp-for="Correo.CorreoNuevo">Nuevo correo electrónico</label>
+                    <input asp-for="Correo.CorreoNuevo" class="form-control" type="email" placeholder="nombre@ejemplo.com" autocomplete="off" />
+                    <span asp-validation-for="Correo.CorreoNuevo" class="text-danger"></span>
+                    <button class="btn btn-primary" type="submit">Actualizar correo</button>
+                </fieldset>
+            </form>
+        </details>
+        <div class="team-operation-bottom"><span class="team-pending-dot @(Model.ProcedimientoDisponible ? "team-ready-dot" : "")" aria-hidden="true"></span> @(Model.ProcedimientoDisponible ? "Procedimiento instalado · operación disponible" : "Procedimiento creado · instálelo en Oracle")</div>
     </article>
 
     <article class="team-operation" id="transaccion-dos">
@@ -77,7 +106,16 @@
     </article>
 </section>
 
+<section class="team-syntax-section" aria-labelledby="team-syntax-title">
+    <div class="team-section-title"><div><span class="eyebrow">TU TRANSACCIÓN · EXPLICACIÓN</span><h2 id="team-syntax-title">Cómo funciona el procedimiento</h2></div><p>La operación 1 es un procedimiento almacenado. Se ejecuta cuando la aplicación o SQL Developer lo llama.</p></div>
+    <div class="team-syntax-grid">
+        <div><span>01 / DECLARACIÓN</span><h3>Entradas y variables</h3><p><code>CREATE OR REPLACE PROCEDURE</code> define el objeto. <code>IN VARCHAR2</code> recibe documento y correo; <code>%TYPE</code> toma el tipo de la columna.</p></div>
+        <div><span>02 / REGLAS</span><h3>Validar y bloquear</h3><p><code>IF</code>, <code>TRIM</code> y <code>REGEXP_LIKE</code> validan los datos. <code>SELECT ... FOR UPDATE WAIT 5</code> bloquea solo la fila del postulante.</p></div>
+        <div><span>03 / RESULTADO</span><h3>Guardar o rechazar</h3><p><code>UPDATE ... WHERE</code> cambia únicamente su correo. <code>EXCEPTION</code> devuelve errores claros; la aplicación decide <code>COMMIT</code> o <code>ROLLBACK</code>.</p></div>
+    </div>
+</section>
+
 <section class="team-next-step" aria-labelledby="team-next-title">
-    <div><span class="eyebrow">ESTADO DEL PROYECTO</span><h2 id="team-next-title">Preparado para la implementación por etapas</h2><p>Este módulo muestra el alcance acordado. La ejecución, las validaciones definitivas y la explicación de cada construcción PL/SQL se añadirán al implementar las sentencias.</p></div>
+    <div><span class="eyebrow">ESTADO DEL PROYECTO</span><h2 id="team-next-title">Una operación lista para comprobar</h2><p>La actualización de correo usa un procedimiento independiente. Las otras dos operaciones permanecen como propuestas para el trabajo del compañero y del equipo.</p></div>
     <a class="btn btn-outline-light" asp-controller="Transacciones" asp-action="Index">Ver módulo actual <span aria-hidden="true">↗</span></a>
 </section>
