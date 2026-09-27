@@ -1,0 +1,83 @@
+@{
+    ViewData["Title"] = "Proyecto en equipo";
+}
+
+<nav class="academic-breadcrumb" aria-label="Ruta de navegación">
+    <a asp-controller="Transacciones" asp-action="Index">Inicio</a>
+    <span aria-hidden="true">/</span>
+    <strong>Proyecto en equipo</strong>
+</nav>
+
+<section class="team-hero" aria-labelledby="team-title">
+    <div class="team-hero-copy">
+        <span class="eyebrow">SEGUNDA ETAPA · TRABAJO COLABORATIVO</span>
+        <h1 id="team-title">Tres nuevas operaciones para la gestión de becas</h1>
+        <p>Un espacio de trabajo para planificar, implementar y comprobar tres transacciones PL/SQL sobre la base de datos del proyecto.</p>
+        <div class="team-hero-meta">
+            <span><span class="team-meta-mark" aria-hidden="true"></span> 2 integrantes</span>
+            <span><span class="team-meta-mark" aria-hidden="true"></span> 3 operaciones propuestas</span>
+            <span><span class="team-meta-mark" aria-hidden="true"></span> Implementación pendiente</span>
+        </div>
+    </div>
+    <div class="team-hero-number" aria-hidden="true"><small>ETAPA</small><strong>02</strong><span>PL/SQL</span></div>
+</section>
+
+<section class="team-overview" aria-label="Estado del módulo">
+    <div><span class="overview-index">01 / ALCANCE</span><strong>Diseño de interfaz</strong><p>La navegación y los casos de uso están definidos para revisión.</p></div>
+    <div><span class="overview-index">02 / SIGUIENTE PASO</span><strong>Reglas y sentencias</strong><p>Se incorporarán después de validar esta propuesta.</p></div>
+    <div><span class="overview-index">03 / ENTREGA</span><strong>Trabajo en GitHub</strong><p>Cada integrante podrá desarrollar y revisar su parte.</p></div>
+</section>
+
+<div class="team-section-title">
+    <div><span class="eyebrow">CASOS DE USO</span><h2>Operaciones propuestas</h2></div>
+    <p>Estas operaciones amplían las cinco transacciones del módulo principal y usan entidades que ya existen en el sistema.</p>
+</div>
+
+<section class="team-operations" aria-label="Tres nuevas transacciones">
+    <article class="team-operation" id="transaccion-uno">
+        <div class="team-operation-top"><span class="team-operation-number">01</span><span class="team-owner">Tu parte</span></div>
+        <span class="team-kicker">POSTULANTE · ACTUALIZACIÓN</span>
+        <h3>Actualizar correo de contacto</h3>
+        <p>Permitir que un postulante registrado actualice su correo sin alterar su identidad ni sus solicitudes existentes.</p>
+        <div class="team-operation-divider"></div>
+        <h4>Datos de entrada previstos</h4>
+        <div class="team-inputs"><span>Documento de identidad</span><span>Nuevo correo electrónico</span></div>
+        <h4>Reglas de negocio a implementar</h4>
+        <ul><li>El postulante debe existir.</li><li>El nuevo correo debe tener un formato válido y ser diferente al actual.</li><li>La actualización debe afectar solo al postulante indicado.</li></ul>
+        <details class="team-preview"><summary>Ver formulario previsto</summary><form aria-label="Vista previa para actualizar correo"><fieldset disabled><label for="correo-documento">Documento de identidad</label><input id="correo-documento" class="form-control" placeholder="Ej. 12345678" /><label for="correo-nuevo">Nuevo correo electrónico</label><input id="correo-nuevo" class="form-control" type="email" placeholder="nombre@ejemplo.com" /><button class="btn btn-primary" type="button">Actualizar correo</button></fieldset></form></details>
+        <div class="team-operation-bottom"><span class="team-pending-dot" aria-hidden="true"></span> Interfaz lista · lógica PL/SQL pendiente</div>
+    </article>
+
+    <article class="team-operation" id="transaccion-dos">
+        <div class="team-operation-top"><span class="team-operation-number">02</span><span class="team-owner">Compañero</span></div>
+        <span class="team-kicker">CONVOCATORIA · CALENDARIO</span>
+        <h3>Reprogramar una convocatoria</h3>
+        <p>Modificar las fechas de una convocatoria vigente conservando una ventana de postulación coherente.</p>
+        <div class="team-operation-divider"></div>
+        <h4>Datos de entrada previstos</h4>
+        <div class="team-inputs"><span>ID de convocatoria</span><span>Nueva fecha de inicio</span><span>Nueva fecha de cierre</span></div>
+        <h4>Reglas de negocio a implementar</h4>
+        <ul><li>La convocatoria debe existir y estar vigente.</li><li>El cierre debe ser posterior al inicio.</li><li>La nueva programación no debe invalidar postulaciones existentes.</li></ul>
+        <details class="team-preview"><summary>Ver formulario previsto</summary><form aria-label="Vista previa para reprogramar convocatoria"><fieldset disabled><label for="oferta-id">ID de convocatoria</label><input id="oferta-id" class="form-control" inputmode="numeric" placeholder="Ej. 101" /><label for="oferta-inicio">Nueva fecha de inicio</label><input id="oferta-inicio" class="form-control" type="date" /><label for="oferta-fin">Nueva fecha de cierre</label><input id="oferta-fin" class="form-control" type="date" /><button class="btn btn-primary" type="button">Guardar fechas</button></fieldset></form></details>
+        <div class="team-operation-bottom"><span class="team-pending-dot" aria-hidden="true"></span> Interfaz lista · lógica PL/SQL pendiente</div>
+    </article>
+
+    <article class="team-operation" id="transaccion-tres">
+        <div class="team-operation-top"><span class="team-operation-number">03</span><span class="team-owner">Trabajo conjunto</span></div>
+        <span class="team-kicker">SOLICITUD · REASIGNACIÓN</span>
+        <h3>Transferir una postulación pendiente</h3>
+        <p>Trasladar una solicitud a otra convocatoria elegible, manteniendo su relación con el mismo postulante.</p>
+        <div class="team-operation-divider"></div>
+        <h4>Datos de entrada previstos</h4>
+        <div class="team-inputs"><span>ID de solicitud</span><span>ID de nueva convocatoria</span></div>
+        <h4>Reglas de negocio a implementar</h4>
+        <ul><li>La solicitud debe estar pendiente y la convocatoria de destino debe estar abierta.</li><li>No puede existir una postulación duplicada del mismo postulante en el destino.</li><li>Si una regla falla, no debe efectuarse el cambio.</li></ul>
+        <details class="team-preview"><summary>Ver formulario previsto</summary><form aria-label="Vista previa para transferir postulación"><fieldset disabled><label for="solicitud-id">ID de solicitud</label><input id="solicitud-id" class="form-control" inputmode="numeric" placeholder="Ej. 501" /><label for="destino-id">ID de nueva convocatoria</label><input id="destino-id" class="form-control" inputmode="numeric" placeholder="Ej. 102" /><button class="btn btn-primary" type="button">Transferir postulación</button></fieldset></form></details>
+        <div class="team-operation-bottom"><span class="team-pending-dot" aria-hidden="true"></span> Interfaz lista · lógica PL/SQL pendiente</div>
+    </article>
+</section>
+
+<section class="team-next-step" aria-labelledby="team-next-title">
+    <div><span class="eyebrow">ESTADO DEL PROYECTO</span><h2 id="team-next-title">Preparado para la implementación por etapas</h2><p>Este módulo muestra el alcance acordado. La ejecución, las validaciones definitivas y la explicación de cada construcción PL/SQL se añadirán al implementar las sentencias.</p></div>
+    <a class="btn btn-outline-light" asp-controller="Transacciones" asp-action="Index">Ver módulo actual <span aria-hidden="true">↗</span></a>
+</section>

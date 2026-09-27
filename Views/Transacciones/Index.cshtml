@@ -1,0 +1,62 @@
+@model PanelBecasViewModel
+@{
+    ViewData["Title"] = "Gestión de becas";
+    var pasos = new[] { ("candidato", "01", "Registrar candidato", "Crea el perfil de quien busca una beca."), ("experiencia", "02", "Añadir experiencia", "Completa su trayectoria profesional."), ("postular", "03", "Enviar postulación", "Vincula un candidato con una oferta."), ("resolver", "04", "Resolver solicitud", "Acepta o rechaza una postulación pendiente."), ("cerrar", "05", "Cerrar oferta", "Finaliza la recepción de postulaciones.") };
+    var actual = pasos.FirstOrDefault(p => p.Item1 == Model.Formulario.Operacion);
+    if (actual == default) actual = pasos[0];
+}
+<nav class="academic-breadcrumb" aria-label="Ubicación"><span>Portal de posgrado</span><span aria-hidden="true">/</span><strong>Gestión de becas</strong></nav>
+<section class="becas-hero">
+    <div><span class="eyebrow">ADMISIÓN Y SEGUIMIENTO ACADÉMICO</span><h1>Gestión de becas de posgrado</h1><p>Administre los registros de postulantes, las solicitudes de beca y las convocatorias de formación avanzada.</p></div>
+    <div class="hero-status"><span class="status-dot @(Model.Disponible ? "online" : "")"></span>@(Model.Disponible ? "Sistema disponible" : "Servicio no disponible")<span class="hero-status-note">Registro y seguimiento de solicitudes</span></div>
+</section>
+<div class="summary-grid" aria-label="Resumen de gestión"><div><span class="metric-label">CONVOCATORIAS</span><strong>@Model.Ofertas.Count.ToString("D2")</strong><span>Ofertas con estado vigente</span></div><div><span class="metric-label">EVALUACIÓN</span><strong>@Model.Solicitudes.Count.ToString("D2")</strong><span>Solicitudes pendientes de resolución</span></div><div><span class="metric-label">LÍMITE DE POSTULACIÓN</span><strong>03 <small>programas</small></strong><span>Máximo permitido por postulante</span></div></div>
+@if (TempData["TransaccionExito"] is string exito) { <div class="alert alert-success" role="status">@exito</div> }
+@if (!Model.Disponible) { <div class="alert alert-warning" role="alert">El servicio de registro no está disponible en este momento. Comuníquese con el responsable del sistema antes de continuar.</div> }
+<div class="operations-grid">
+    <aside class="academic-sidebar">
+    <div class="sidebar-heading"><span class="eyebrow">TRÁMITES ACADÉMICOS</span><h2>Seleccione una gestión</h2></div>
+    <nav class="operation-list" aria-label="Operaciones disponibles">
+        @foreach (var paso in pasos) {
+            <a asp-action="Index" asp-route-operacion="@paso.Item1" class="operation-link @(actual.Item1 == paso.Item1 ? "selected" : "")" aria-current="@(actual.Item1 == paso.Item1 ? "page" : null)"><span class="step-number">@paso.Item2</span><span><strong>@paso.Item3</strong><small>@paso.Item4</small></span><span class="step-arrow" aria-hidden="true">›</span></a>
+        }
+    </nav>
+    <div class="academic-help"><strong>Antes de registrar una solicitud</strong><p>Verifique los datos del postulante y el plazo de la convocatoria. Cada persona puede postular a un máximo de tres programas.</p><a asp-controller="Oferta" asp-action="Index">Consultar convocatorias <span aria-hidden="true">→</span></a></div>
+    </aside>
+    <section class="operation-form">
+        <div class="form-heading"><span class="eyebrow">FORMULARIO @actual.Item2</span><h2>@actual.Item3</h2><p>@actual.Item4</p></div>
+        <form asp-action="Ejecutar" method="post">
+            <p class="required-note">Los campos identificados con <span>*</span> son obligatorios.</p>
+            <div asp-validation-summary="All" class="text-danger" role="alert"></div>
+            <input type="hidden" name="Formulario.Operacion" value="@actual.Item1" />
+            <fieldset disabled="@(!Model.Disponible)">
+            @if (actual.Item1 is "candidato" or "experiencia" or "postular") {
+                <div class="mb-3"><label asp-for="Formulario.Documento">Documento de identidad *</label><input asp-for="Formulario.Documento" class="form-control" maxlength="20" required placeholder="Ej. 1234567" /></div>
+            }
+            @if (actual.Item1 == "candidato") {
+                <div class="row"><div class="col-sm-6 mb-3"><label asp-for="Formulario.Nombres">Nombres *</label><input asp-for="Formulario.Nombres" class="form-control" maxlength="100" required /></div><div class="col-sm-6 mb-3"><label asp-for="Formulario.Apellidos">Apellidos *</label><input asp-for="Formulario.Apellidos" class="form-control" maxlength="100" required /></div></div>
+                <div class="mb-3"><label asp-for="Formulario.Correo">Correo electrónico *</label><input asp-for="Formulario.Correo" class="form-control" type="email" maxlength="100" required /></div>
+                <div class="mb-3"><label asp-for="Formulario.Nivel">Nivel de formación *</label><select asp-for="Formulario.Nivel" class="form-select" required><option value="">Selecciona un nivel</option><option>Licenciatura</option><option>Especialidad</option><option>Maestría</option><option>Doctorado</option></select></div>
+            }
+            @if (actual.Item1 == "experiencia") {
+                <div class="mb-3"><label asp-for="Formulario.Empresa">Empresa *</label><input asp-for="Formulario.Empresa" class="form-control" maxlength="100" required /></div>
+                <div class="mb-3"><label asp-for="Formulario.Cargo">Cargo *</label><input asp-for="Formulario.Cargo" class="form-control" maxlength="100" required /></div>
+                <div class="row"><div class="col-sm-6 mb-3"><label asp-for="Formulario.Inicio">Fecha de inicio *</label><input asp-for="Formulario.Inicio" class="form-control" type="date" required /></div><div class="col-sm-6 mb-3"><label asp-for="Formulario.Fin">Fecha de fin</label><input asp-for="Formulario.Fin" class="form-control" type="date" /><small class="text-muted">Déjala vacía si es tu empleo actual.</small></div></div>
+            }
+            @if (actual.Item1 is "postular" or "cerrar") {
+                <div class="mb-3"><label asp-for="Formulario.Oferta">Oferta *</label><select asp-for="Formulario.Oferta" class="form-select" required><option value="">Selecciona una oferta</option>@foreach(var o in Model.Ofertas) { <option value="@o.Id">@o.Descripcion</option> }</select></div>
+            }
+            @if (actual.Item1 == "postular") {
+                <div class="mb-3"><label asp-for="Formulario.Resumen">Motivación *</label><textarea asp-for="Formulario.Resumen" class="form-control" rows="4" maxlength="2000" required placeholder="Cuéntanos por qué te interesa este programa"></textarea><small class="text-muted">Hasta 2000 caracteres. La oferta debe estar dentro de su plazo.</small></div>
+            }
+            @if (actual.Item1 == "resolver") {
+                <div class="mb-3"><label asp-for="Formulario.Solicitud">Solicitud pendiente *</label><select asp-for="Formulario.Solicitud" class="form-select" required><option value="">Selecciona una solicitud</option>@foreach(var s in Model.Solicitudes) { <option value="@s.Id">@s.Descripcion</option> }</select></div>
+                <div class="mb-3"><label asp-for="Formulario.Estado">Resolución *</label><select asp-for="Formulario.Estado" class="form-select" required><option value="">Selecciona una resolución</option><option>Aceptada</option><option>Rechazada</option></select></div>
+                <p class="operation-note">Al guardar, la solicitud dejará de estar pendiente.</p>
+            }
+            @if (actual.Item1 == "cerrar") { <p class="operation-note">La oferta pasará a Cerrada y dejará de recibir postulaciones. Las solicitudes existentes conservan su estado.</p> }
+            <div class="form-actions"><span>Revise la información antes de guardar.</span><button class="btn btn-primary px-4 py-2" type="submit">@actual.Item3 <span aria-hidden="true">→</span></button></div>
+            </fieldset>
+        </form>
+    </section>
+</div>

@@ -1,116 +1,60 @@
+@{
+    var controller = ViewContext.RouteData.Values["controller"]?.ToString();
+    var esAdmin = SistemaBecasWeb.Filters.ModoVista.ObtenerModo(Context.Request) == SistemaBecasWeb.Filters.ModoVista.Admin;
+    var seccionesAdmin = new[] { ("Solicitud", "Solicitudes", "Administrar"), ("Transacciones", "Gestión de becas", "Index"), ("NuevasTransacciones", "Proyecto en equipo", "Index"), ("Postulante", "Candidatos", "Index"), ("Oferta", "Ofertas", "Index"), ("Programa", "Programas", "Index"), ("Universidad", "Universidades", "Index"), ("Sede", "Sedes", "Index") };
+}
 <!DOCTYPE html>
 <html lang="es">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - Portal de Becas de Posgrado</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
-    <link href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-    <link href="~/css/portal.css" rel="stylesheet" asp-append-version="true">
-    <style>
-        html, body { height: 100%; }
-        body { display: flex; flex-direction: column; }
-        .content-flex { flex: 1 0 auto; }
-        .footer { flex-shrink: 0; }
-    </style>
+    <title>@ViewData["Title"] · Portal de Posgrado</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
 </head>
 <body>
-    @{
-        var modoActual = SistemaBecasWeb.Filters.ModoVista.ObtenerModo(Context.Request);
-        var esAdmin = modoActual == SistemaBecasWeb.Filters.ModoVista.Admin;
-        var rutaActual = Context.Request.Path + Context.Request.QueryString;
-    }
-    <header>
-        <nav class="navbar navbar-expand-lg navbar-dark navbar-portal">
+    <a class="skip-link" href="#contenido">Saltar al contenido</a>
+    <header class="institution-header">
+        <div class="academic-strip"><div class="container">FORMACIÓN AVANZADA <span>Portal de gestión académica</span></div></div>
+        <div class="container institution-brand">
+            <a class="brand-link" asp-controller="Home" asp-action="Index">
+                <span class="academic-emblem" aria-hidden="true"><svg viewBox="0 0 48 48" fill="none"><path d="M24 5 7 13v12c0 9 17 18 17 18s17-9 17-18V13L24 5Z" stroke="currentColor" stroke-width="1.5"/><path d="M14 18c4-1 7 0 10 2 3-2 6-3 10-2v13c-4-1-7 0-10 2-3-2-6-3-10-2V18Z" stroke="currentColor" stroke-width="1.5"/><path d="M24 20v13" stroke="currentColor" stroke-width="1.5"/></svg></span>
+                <span><strong>Estudios de Posgrado</strong><small>SISTEMA DE BECAS Y CONVOCATORIAS</small></span>
+            </a>
+            <div class="institution-caption">Gestión académica<span>Formación · Investigación · Oportunidades</span><span class="institution-mode">@(esAdmin ? "Modo Administrador" : "Modo Postulante")</span></div>
+        </div>
+        <nav class="navbar navbar-expand-lg academic-nav" aria-label="Navegación principal">
             <div class="container">
-                <a class="navbar-brand" href="/">
-                    Becas Posgrado
-                    <span class="badge modo-badge @(esAdmin ? "modo-badge-admin" : "modo-badge-postulante")">
-                        @(esAdmin ? "Modo Administrador" : "Modo Postulante")
-                    </span>
-                </a>
-
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
-
+                <span class="mobile-menu-label d-lg-none">Menú académico</span>
+                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Abrir navegación"><span class="navbar-toggler-icon"></span></button>
                 <div class="collapse navbar-collapse" id="navbarNav">
-                    @if (!esAdmin)
+                    @if (esAdmin)
                     {
-                        <!-- Portal publico: lo que ve un postulante -->
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/">Programas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Postulante/Crear">Crear mi perfil</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Solicitud/Index">Postularme</a>
-                            </li>
+                        <ul class="navbar-nav me-auto">
+                            @foreach (var seccion in seccionesAdmin)
+                            {
+                                <li class="nav-item"><a class="nav-link @(controller == seccion.Item1 ? "active" : "")" asp-controller="@seccion.Item1" asp-action="@seccion.Item3" aria-current="@(controller == seccion.Item1 ? "page" : null)">@seccion.Item2</a></li>
+                            }
                         </ul>
                     }
                     else
                     {
-                        <!-- Panel administrativo: catalogos, CRUDs y solicitudes -->
-                        <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Solicitud/Administrar">Solicitudes</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Postulante/Index">Candidatos</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Oferta/Index">Ofertas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Programa/Index">Programas</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Universidad/Index">Universidades</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link" href="/Sede/Index">Sedes</a>
-                            </li>
+                        <ul class="navbar-nav me-auto">
+                            <li class="nav-item"><a class="nav-link @(controller == "Home" ? "active" : "")" asp-controller="Home" asp-action="Index">Programas</a></li>
+                            <li class="nav-item"><a class="nav-link" asp-controller="Postulante" asp-action="Crear">Crear mi perfil</a></li>
+                            <li class="nav-item"><a class="nav-link @(controller == "Solicitud" ? "active" : "")" asp-controller="Solicitud" asp-action="Index">Postularme</a></li>
                         </ul>
                     }
-
-                    <!-- Boton para alternar entre el portal publico y el panel administrativo -->
-                    <ul class="navbar-nav">
-                        <li class="nav-item">
-                            @if (!esAdmin)
-                            {
-                                <a class="btn btn-sm btn-portal-outline btn-modo"
-                                   href="/Home/CambiarModo?modo=admin&returnUrl=@Uri.EscapeDataString("/Solicitud/Administrar")">
-                                    Entrar como Administrador
-                                </a>
-                            }
-                            else
-                            {
-                                <a class="btn btn-sm btn-portal-outline btn-modo"
-                                   href="/Home/CambiarModo?modo=postulante&returnUrl=@Uri.EscapeDataString("/")">
-                                    Volver al portal público
-                                </a>
-                            }
-                        </li>
-                    </ul>
+                    <a class="btn btn-outline-primary nav-mode-switch" asp-controller="Home" asp-action="CambiarModo" asp-route-modo="@(esAdmin ? "postulante" : "admin")" asp-route-returnUrl="@(esAdmin ? "/" : "/Solicitud/Administrar")">@(esAdmin ? "Volver al portal público" : "Entrar como Administrador")</a>
                 </div>
             </div>
         </nav>
     </header>
-
-    <div class="content-flex">
-        <main role="main">
-            @RenderBody()
-        </main>
+    <div class="container content-flex">
+        <main id="contenido" tabindex="-1">@RenderBody()</main>
     </div>
-
-    <footer class="footer bg-light text-center text-muted py-3 mt-auto" style="border-top: 1px solid #DBD5C6;">
-        <div class="container">
-            <small>Sistema de Gestion Academica Objeto-Relacional &mdash; Becas de Posgrado</small>
-        </div>
-    </footer>
-
+    <footer class="academic-footer"><div class="container"><div><strong>Estudios de Posgrado</strong><span>Portal de becas y gestión académica</span></div><small>&copy; @DateTime.Now.Year · Sistema de Becas de Posgrado</small></div></footer>
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>
