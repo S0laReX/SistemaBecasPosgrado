@@ -14,6 +14,7 @@ builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<ISolicitudRepository, OracleSolicitudRepository>();
 builder.Services.AddScoped<TransaccionRepository>();
 builder.Services.AddScoped<CorreoPostulanteRepository>();
+builder.Services.AddScoped<TransferenciaPostulacionRepository>();
 
 var app = builder.Build();
 

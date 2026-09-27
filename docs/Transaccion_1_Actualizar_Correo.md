@@ -1,6 +1,6 @@
 # Nueva transacción 1: actualizar el correo de un postulante
 
-Esta es **tu operación** de la segunda etapa del proyecto. Es un **procedimiento almacenado**, no un trigger: la web o SQL Developer lo invoca explícitamente con un documento y un correo nuevo. Modifica únicamente `POSTULANTES.CORREO` del documento indicado. La convocatoria y las solicitudes no cambian. Las operaciones 2 y 3 siguen pendientes para el compañero y el trabajo conjunto.
+Esta es **tu primera operación** de la segunda etapa del proyecto. Es un **procedimiento almacenado**, no un trigger: la web o SQL Developer lo invoca explícitamente con un documento y un correo nuevo. Modifica únicamente `POSTULANTES.CORREO` del documento indicado. La convocatoria y las solicitudes no cambian. La operación 3 también está implementada por ti; la operación 2 queda para tu compañero.
 
 ## Archivos y orden de ejecución
 

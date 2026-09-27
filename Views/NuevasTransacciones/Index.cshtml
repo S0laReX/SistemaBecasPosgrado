@@ -2,6 +2,8 @@
 @{
     ViewData["Title"] = "Proyecto en equipo";
     var correoExito = TempData["CorreoExito"] as string;
+    var transferenciaExito = TempData["TransferenciaExito"] as string;
+    var operacionActiva = ViewData["OperacionActiva"] as string;
     var esAdmin = SistemaBecasWeb.Filters.ModoVista.ObtenerModo(Context.Request) == SistemaBecasWeb.Filters.ModoVista.Admin;
 }
 
@@ -19,16 +21,16 @@
         <div class="team-hero-meta">
             <span><span class="team-meta-mark" aria-hidden="true"></span> 2 integrantes</span>
             <span><span class="team-meta-mark" aria-hidden="true"></span> 3 operaciones propuestas</span>
-            <span><span class="team-meta-mark" aria-hidden="true"></span> 1 operación implementada · 2 pendientes</span>
+            <span><span class="team-meta-mark" aria-hidden="true"></span> 2 operaciones implementadas · 1 pendiente</span>
         </div>
     </div>
     <div class="team-hero-number" aria-hidden="true"><small>ETAPA</small><strong>02</strong><span>PL/SQL</span></div>
 </section>
 
 <section class="team-overview" aria-label="Estado del módulo">
-    <div><span class="overview-index">01 / TU TRANSACCIÓN</span><strong>Actualización de correo</strong><p>Procedimiento y formulario disponibles tras instalar el script.</p></div>
+    <div><span class="overview-index">01 Y 03 / TUS TRANSACCIONES</span><strong>Correo y transferencia</strong><p>Dos procedimientos y formularios disponibles tras instalar los scripts.</p></div>
     <div><span class="overview-index">02 / SIGUIENTE PASO</span><strong>Operación del compañero</strong><p>La reprogramación de convocatorias sigue en preparación.</p></div>
-    <div><span class="overview-index">03 / ENTREGA</span><strong>Trabajo en GitHub</strong><p>Cada integrante podrá desarrollar y revisar su parte.</p></div>
+    <div><span class="overview-index">03 / ENTREGA</span><strong>Trabajo en GitHub</strong><p>Tu compañero desarrollará la operación 2 en el mismo proyecto.</p></div>
 </section>
 
 <div class="team-section-title">
@@ -47,7 +49,7 @@
         <div class="team-inputs"><span>Documento de identidad</span><span>Nuevo correo electrónico</span></div>
         <h4>Reglas de negocio implementadas</h4>
         <ul><li>El postulante debe existir.</li><li>El nuevo correo debe tener un formato válido y ser diferente al actual.</li><li>La actualización debe afectar solo al postulante indicado.</li></ul>
-        <details class="team-preview" open="@(correoExito is not null || !ViewData.ModelState.IsValid)">
+        <details class="team-preview" open="@(correoExito is not null || (operacionActiva == "correo" && !ViewData.ModelState.IsValid))">
             <summary>Actualizar correo de un postulante</summary>
             @if (correoExito is not null)
             {
@@ -92,22 +94,48 @@
     </article>
 
     <article class="team-operation" id="transaccion-tres">
-        <div class="team-operation-top"><span class="team-operation-number">03</span><span class="team-owner">Trabajo conjunto</span></div>
+        <div class="team-operation-top"><span class="team-operation-number">03</span><span class="team-owner">Tu parte</span></div>
         <span class="team-kicker">SOLICITUD · REASIGNACIÓN</span>
         <h3>Transferir una postulación pendiente</h3>
         <p>Trasladar una solicitud a otra convocatoria elegible, manteniendo su relación con el mismo postulante.</p>
         <div class="team-operation-divider"></div>
-        <h4>Datos de entrada previstos</h4>
+        <h4>Datos de entrada</h4>
         <div class="team-inputs"><span>ID de solicitud</span><span>ID de nueva convocatoria</span></div>
-        <h4>Reglas de negocio a implementar</h4>
+        <h4>Reglas de negocio implementadas</h4>
         <ul><li>La solicitud debe estar pendiente y la convocatoria de destino debe estar abierta.</li><li>No puede existir una postulación duplicada del mismo postulante en el destino.</li><li>Si una regla falla, no debe efectuarse el cambio.</li></ul>
-        <details class="team-preview"><summary>Ver formulario previsto</summary><form aria-label="Vista previa para transferir postulación"><fieldset disabled><label for="solicitud-id">ID de solicitud</label><input id="solicitud-id" class="form-control" inputmode="numeric" placeholder="Ej. 501" /><label for="destino-id">ID de nueva convocatoria</label><input id="destino-id" class="form-control" inputmode="numeric" placeholder="Ej. 102" /><button class="btn btn-primary" type="button">Transferir postulación</button></fieldset></form></details>
-        <div class="team-operation-bottom"><span class="team-pending-dot" aria-hidden="true"></span> Interfaz lista · lógica PL/SQL pendiente</div>
+        <details class="team-preview" open="@(transferenciaExito is not null || (operacionActiva == "transferencia" && !ViewData.ModelState.IsValid))">
+            <summary>Transferir una postulación</summary>
+            @if (transferenciaExito is not null)
+            {
+                <div class="alert alert-success mt-3" role="status">@transferenciaExito</div>
+            }
+            @if (Model.MensajeTransferencia is not null)
+            {
+                <div class="operation-note mt-3" role="status">@Model.MensajeTransferencia</div>
+            }
+            @if (!esAdmin)
+            {
+                <div class="operation-note mt-3">Cambie a Modo Administrador para ejecutar la operación.</div>
+            }
+            <form asp-controller="NuevasTransacciones" asp-action="TransferirPostulacion" method="post" aria-label="Transferir postulación pendiente">
+                <div asp-validation-summary="ModelOnly" class="text-danger" role="alert"></div>
+                <fieldset disabled="@(!Model.TransferenciaDisponible || !esAdmin)">
+                    <label asp-for="Transferencia.SolicitudId">ID de solicitud pendiente</label>
+                    <input asp-for="Transferencia.SolicitudId" class="form-control" type="number" min="1" step="1" placeholder="Ej. 501" />
+                    <span asp-validation-for="Transferencia.SolicitudId" class="text-danger"></span>
+                    <label asp-for="Transferencia.OfertaDestinoId">ID de nueva convocatoria</label>
+                    <input asp-for="Transferencia.OfertaDestinoId" class="form-control" type="number" min="1" step="1" placeholder="Ej. 102" />
+                    <span asp-validation-for="Transferencia.OfertaDestinoId" class="text-danger"></span>
+                    <button class="btn btn-primary" type="submit">Transferir postulación</button>
+                </fieldset>
+            </form>
+        </details>
+        <div class="team-operation-bottom"><span class="team-pending-dot @(Model.TransferenciaDisponible ? "team-ready-dot" : "")" aria-hidden="true"></span> @(Model.TransferenciaDisponible ? "Procedimiento instalado · operación disponible" : "Procedimiento creado · instálelo en Oracle")</div>
     </article>
 </section>
 
 <section class="team-syntax-section" aria-labelledby="team-syntax-title">
-    <div class="team-section-title"><div><span class="eyebrow">TU TRANSACCIÓN · EXPLICACIÓN</span><h2 id="team-syntax-title">Cómo funciona el procedimiento</h2></div><p>La operación 1 es un procedimiento almacenado. Se ejecuta cuando la aplicación o SQL Developer lo llama.</p></div>
+    <div class="team-section-title"><div><span class="eyebrow">TRANSACCIÓN 1 · EXPLICACIÓN</span><h2 id="team-syntax-title">Cómo se actualiza el correo</h2></div><p>La operación 1 es un procedimiento almacenado. Se ejecuta cuando la aplicación o SQL Developer lo llama.</p></div>
     <div class="team-syntax-grid">
         <div><span>01 / DECLARACIÓN</span><h3>Entradas y variables</h3><p><code>CREATE OR REPLACE PROCEDURE</code> define el objeto. <code>IN VARCHAR2</code> recibe documento y correo; <code>%TYPE</code> toma el tipo de la columna.</p></div>
         <div><span>02 / REGLAS</span><h3>Validar y bloquear</h3><p><code>IF</code>, <code>TRIM</code> y <code>REGEXP_LIKE</code> validan los datos. <code>SELECT ... FOR UPDATE WAIT 5</code> bloquea solo la fila del postulante.</p></div>
@@ -115,7 +143,16 @@
     </div>
 </section>
 
+<section class="team-syntax-section" aria-labelledby="transfer-syntax-title">
+    <div class="team-section-title"><div><span class="eyebrow">TRANSACCIÓN 3 · EXPLICACIÓN</span><h2 id="transfer-syntax-title">Cómo se transfiere la postulación</h2></div><p>El procedimiento conserva la misma solicitud y el mismo postulante; sustituye únicamente la referencia a la oferta.</p></div>
+    <div class="team-syntax-grid">
+        <div><span>01 / BLOQUEO</span><h3>Solicitud y postulante</h3><p><code>FOR UPDATE WAIT 5</code> protege la solicitud y el postulante. <code>IF</code> exige estado <code>Pendiente</code>.</p></div>
+        <div><span>02 / DESTINO</span><h3>Oferta elegible</h3><p><code>REF(o)</code> obtiene la referencia a la oferta vigente. Las fechas, el estado y <code>COUNT(*)</code> evitan destinos inválidos o duplicados.</p></div>
+        <div><span>03 / CAMBIO</span><h3>Una sola referencia</h3><p><code>UPDATE ... SET ref_oferta</code> traslada la solicitud. Los errores cancelan el cambio y la aplicación controla <code>COMMIT</code>/<code>ROLLBACK</code>.</p></div>
+    </div>
+</section>
+
 <section class="team-next-step" aria-labelledby="team-next-title">
-    <div><span class="eyebrow">ESTADO DEL PROYECTO</span><h2 id="team-next-title">Una operación lista para comprobar</h2><p>La actualización de correo usa un procedimiento independiente. Las otras dos operaciones permanecen como propuestas para el trabajo del compañero y del equipo.</p></div>
+    <div><span class="eyebrow">ESTADO DEL PROYECTO</span><h2 id="team-next-title">Dos operaciones listas para comprobar</h2><p>La actualización de correo y la transferencia de postulaciones usan procedimientos independientes. La reprogramación de convocatorias queda para tu compañero.</p></div>
     <a class="btn btn-outline-light" asp-controller="Transacciones" asp-action="Index">Ver módulo actual <span aria-hidden="true">↗</span></a>
 </section>

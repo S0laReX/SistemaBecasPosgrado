@@ -27,9 +27,9 @@ Los procedimientos no confirman internamente: el llamador controla la transacci�
 
 ## Segunda etapa: tres operaciones en equipo
 
-La vista `/NuevasTransacciones` presenta tres casos de uso. **La operación 1, actualizar el correo de un postulante, ya está implementada** con el procedimiento independiente `sp_actualizar_correo_postulante`; las operaciones 2 (reprogramar convocatoria) y 3 (transferir una postulación pendiente) permanecen como vista previa para el compañero y el desarrollo conjunto. Explicación detallada de cada construcción PL/SQL de la primera operación: [Transacción 1: actualizar correo](docs/Transaccion_1_Actualizar_Correo.md).
+La vista `/NuevasTransacciones` presenta tres casos de uso. **Las operaciones 1 y 3 ya están implementadas** con procedimientos independientes: `sp_actualizar_correo_postulante` y `sp_transferir_postulacion`. La operación 2 (reprogramar convocatoria) queda para el compañero. La sintaxis y cada construcción PL/SQL están explicadas en [Transacción 1: actualizar correo](docs/Transaccion_1_Actualizar_Correo.md) y [Transacción 3: transferir postulación](docs/Transaccion_3_Transferir_Postulacion.md).
 
-Ejecutar con F5 `Database/04_actualizar_correo_postulante.sql` en el esquema propietario de `POSTULANTES`. Después ejecutar con F5 `Database/05_prueba_actualizar_correo.sql`: la prueba crea datos temporales y los revierte. En la web, usar **Modo Administrador → Proyecto en equipo**. El procedimiento no hace `COMMIT`; la web lo confirma mediante una transacción de ODP.NET. GitHub no instala los objetos en el Oracle del compañero: él debe ejecutar el script 04 en su entorno.
+Ejecutar con F5 `Database/04_actualizar_correo_postulante.sql` y `Database/06_transferir_postulacion.sql` en el esquema propietario de las tablas. Después ejecutar las pruebas reversibles `Database/05_prueba_actualizar_correo.sql` y `Database/07_prueba_transferir_postulacion.sql`. En la web, usar **Modo Administrador → Proyecto en equipo**. Los procedimientos no hacen `COMMIT`; la web confirma mediante transacciones de ODP.NET. GitHub no instala los objetos en el Oracle del compañero: él debe ejecutar los scripts 04 y 06 en su entorno.
 
 ## SQL Developer: ejecutar
 
@@ -59,9 +59,9 @@ Remoto: https://github.com/S0laReX/SistemaBecasPosgrado
 
 | Integrante | Desarrollo propuesto | Revisión cruzada |
 |---|---|---|
-| Integrante de interfaz | Nueva operación 1: correo, formulario y explicación | Revisar la operación 2. |
+| Integrante de interfaz | Nuevas operaciones 1 y 3: correo y transferencia, formularios y explicación | Revisar la operación 2. |
 | Compañero | Nueva operación 2: reprogramar convocatoria | Revisar la operación 1. |
-| Ambos | Nueva operación 3: transferir solicitud pendiente | Probar la integración y explicar las tres operaciones. |
+| Ambos | Integración final del proyecto | Probar y explicar las tres operaciones. |
 
 1. El propietario invita la cuenta del compañero en Settings → Collaborators. No compartir contraseñas ni tokens.
 2. Cada integrante clona el repositorio y configura una copia Oracle de práctica. GitHub comparte código/scripts, NO sincroniza bases de datos. No hace falta exponer el Oracle local a Internet.
@@ -72,8 +72,8 @@ Remoto: https://github.com/S0laReX/SistemaBecasPosgrado
 
 ```powershell
 git status
-git add Database/04_actualizar_correo_postulante.sql Database/05_prueba_actualizar_correo.sql Controllers/NuevasTransaccionesController.cs Models/CorreoPostulanteViewModel.cs Repositories/CorreoPostulanteRepository.cs Views/NuevasTransacciones/Index.cshtml Program.cs wwwroot/css/site.css docs/Transaccion_1_Actualizar_Correo.md README.md
-git commit -m "Implementa la primera transacción de la segunda etapa"
+git add Database/06_transferir_postulacion.sql Database/07_prueba_transferir_postulacion.sql Controllers/NuevasTransaccionesController.cs Models/CorreoPostulanteViewModel.cs Models/TransferenciaPostulacionViewModel.cs Repositories/TransferenciaPostulacionRepository.cs Views/NuevasTransacciones/Index.cshtml Program.cs docs/Transaccion_1_Actualizar_Correo.md docs/Transaccion_3_Transferir_Postulacion.md README.md
+git commit -m "Implementa transferencia de postulaciones pendientes"
 git pull --rebase origin master
 git push origin master
 ```
