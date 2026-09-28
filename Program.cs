@@ -13,6 +13,7 @@ builder.Services.AddControllersWithViews();
 // Inyección de Dependencias: Registrar el Repositorio de Oracle
 builder.Services.AddScoped<ISolicitudRepository, OracleSolicitudRepository>();
 builder.Services.AddScoped<TransaccionRepository>();
+builder.Services.AddScoped<ReprogramarConvocatoriaRepository>();
 builder.Services.AddScoped<CorreoPostulanteRepository>();
 builder.Services.AddScoped<TransferenciaPostulacionRepository>();
 

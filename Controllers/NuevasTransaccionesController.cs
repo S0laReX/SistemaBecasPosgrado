@@ -9,6 +9,7 @@ namespace SistemaBecasWeb.Controllers;
 public class NuevasTransaccionesController(
     CorreoPostulanteRepository repository,
     TransferenciaPostulacionRepository transferenciaRepository,
+    ReprogramarConvocatoriaRepository reprogramacionRepository,
     ILogger<NuevasTransaccionesController> logger) : Controller
 {
     [HttpGet]
@@ -74,15 +75,48 @@ public class NuevasTransaccionesController(
         return View("Index", CrearModelo(transferencia: transferencia));
     }
 
+    [HttpPost, ValidateAntiForgeryToken, RequiereModoAdmin]
+    public IActionResult ReprogramarConvocatoria([Bind(Prefix = "Reprogramacion")] ReprogramarConvocatoriaViewModel reprogramacion)
+    {
+        ViewData["OperacionActiva"] = "reprogramacion";
+        if (!ModelState.IsValid) return View("Index", CrearModelo(reprogramacion: reprogramacion));
+
+        try
+        {
+            reprogramacionRepository.Reprogramar(reprogramacion.OfertaId!.Value, reprogramacion.NuevaFechaInicio!.Value, reprogramacion.NuevaFechaFin!.Value);
+            TempData["ReprogramacionExito"] = "Convocatoria reprogramada correctamente en Oracle.";
+            return RedirectToAction(nameof(Index), "NuevasTransacciones", null, "transaccion-dos");
+        }
+        catch (OracleException ex)
+        {
+            logger.LogWarning("Reprogramación de convocatoria rechazada por Oracle: {Codigo}", ex.Number);
+            var mensaje = ex.Number is >= 20301 and <= 20308
+                ? ex.Message.Split('\n')[0].Split(": ", 2).Last()
+                : ex.Number is 54 or 30006
+                    ? "Otro usuario está modificando esta convocatoria. Inténtelo nuevamente."
+                    : "No se pudo reprogramar la convocatoria. Verifique la conexión y que el procedimiento esté instalado.";
+            ModelState.AddModelError(string.Empty, mensaje);
+        }
+        catch (InvalidOperationException)
+        {
+            ModelState.AddModelError(string.Empty, "Configure la conexión OracleDB antes de guardar.");
+        }
+
+        return View("Index", CrearModelo(reprogramacion: reprogramacion));
+    }
+
     private ProyectoEquipoViewModel CrearModelo(
         CorreoPostulanteViewModel? correo = null,
-        TransferenciaPostulacionViewModel? transferencia = null)
+        TransferenciaPostulacionViewModel? transferencia = null,
+        ReprogramarConvocatoriaViewModel? reprogramacion = null)
     {
         var modelo = new ProyectoEquipoViewModel
         {
             Correo = correo ?? new(),
-            Transferencia = transferencia ?? new()
+            Transferencia = transferencia ?? new(),
+            Reprogramacion = reprogramacion ?? new()
         };
+
         try
         {
             modelo.ProcedimientoDisponible = repository.EstaInstalado();
@@ -113,6 +147,22 @@ public class NuevasTransaccionesController(
         catch (InvalidOperationException)
         {
             modelo.MensajeTransferencia = "Configure la conexión OracleDB localmente para activar esta operación.";
+        }
+
+        try
+        {
+            modelo.ReprogramacionDisponible = reprogramacionRepository.EstaInstalado();
+            if (!modelo.ReprogramacionDisponible)
+                modelo.MensajeReprogramacion = "Instale Database/08_reprogramacion_convocatoria.sql en su esquema Oracle para activar esta operación.";
+        }
+        catch (OracleException ex)
+        {
+            logger.LogWarning("No se pudo verificar el procedimiento de reprogramación: {Codigo}", ex.Number);
+            modelo.MensajeReprogramacion = "No se pudo comprobar la conexión con Oracle.";
+        }
+        catch (InvalidOperationException)
+        {
+            modelo.MensajeReprogramacion = "Configure la conexión OracleDB localmente para activar esta operación.";
         }
 
         return modelo;

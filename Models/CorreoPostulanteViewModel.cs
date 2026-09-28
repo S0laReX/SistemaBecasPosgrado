@@ -18,8 +18,11 @@ public class ProyectoEquipoViewModel
 {
     public CorreoPostulanteViewModel Correo { get; set; } = new();
     public TransferenciaPostulacionViewModel Transferencia { get; set; } = new();
+    public ReprogramarConvocatoriaViewModel Reprogramacion { get; set; } = new();
     public bool ProcedimientoDisponible { get; set; }
     public string? MensajeInstalacion { get; set; }
     public bool TransferenciaDisponible { get; set; }
     public string? MensajeTransferencia { get; set; }
+    public bool ReprogramacionDisponible { get; set; }
+    public string? MensajeReprogramacion { get; set; }
 }
